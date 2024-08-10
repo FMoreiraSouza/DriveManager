@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  bool _isLoggingOut = false; // Estado para o carregamento
+  bool _isLoggingOut = false;
 
   final List<Widget> _pages = [
     const FleetListScreen(),
@@ -45,17 +45,16 @@ class HomeScreenState extends State<HomeScreen> {
         break;
       case 'sair':
         setState(() {
-          _isLoggingOut = true; // Inicia o carregamento
+          _isLoggingOut = true;
         });
 
         await widget.loginController.signOut();
-        // Adiciona um delay para simular o carregamento
+
         await Future.delayed(const Duration(seconds: 1));
 
         if (mounted) {
-          // Verifica se o widget ainda está montado
           setState(() {
-            _isLoggingOut = false; // Encerra o carregamento
+            _isLoggingOut = false;
           });
 
           NavigationService.pushReplacementNamed('/login');
