@@ -1,16 +1,27 @@
-# drivemanager
+![Logomarca](assets/images/drive_manager_logo.png)
 
-A new Flutter project.
+## Sobre o Aplicativo
 
-## Getting Started
+O **Nome do Aplicativo** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo permite a administração eficiente das informações de cada veículo, monitoramento em tempo real e geração de relatórios detalhados.
 
-This project is a starting point for a Flutter application.
+## Tecnologias e Abordagens Utilizadas
 
-A few resources to get you started if this is your first Flutter project:
+- **Dart**: Linguagem de programação utilizada para o desenvolvimento do aplicativo.
+- **Flutter**: Framework para criar a interface do usuário e lógica do aplicativo.
+- **Supabase**: Plataforma de backend para autenticação e gerenciamento de dados.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Funcionalidades
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+O **Drive Manager** oferece as seguintes funcionalidades:
+
+- **Cadastro de Frota**: Adicione e gerencie veículos e motoristas, incluindo informações como status de funcionamento, chassi e IMEI do rastreador (gerado aleatoriamente no aplicativo, pois o rastreador real não está disponível).
+- **Relatórios**: Gere relatórios detalhados sobre o desempenho e status dos veículos.
+- **Acompanhamento em Tempo Real**: Monitore a localização dos veículos em um mapa em tempo real.
+
+## O que se Pretende Fazer
+
+O aplicativo está em desenvolvimento com o objetivo de:
+
+- **Cadastrar a Frota**: Incluir detalhes sobre cada veículo e motorista, e monitorar o status de funcionamento dos veículos.
+- **Gerar Relatórios**: Produzir relatórios úteis para a gestão e análise da frota.
+- **Acompanhar Veículos em Tempo Real**: Fornecer uma visualização em tempo real da localização dos veículos no mapa.
