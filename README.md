@@ -1,8 +1,8 @@
-![Logomarca](assets/images/drive_manager_logo.png)
+<img src="assets/images/drive_manager_logo.png" alt="Logomarca" width="500" height="550">
 
 ## Sobre o Aplicativo
 
-O **Nome do Aplicativo** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo permite a administração eficiente das informações de cada veículo, monitoramento em tempo real e geração de relatórios detalhados.
+O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo permite a administração eficiente das informações de cada veículo, monitoramento em tempo real e geração de relatórios detalhados.
 
 ## Tecnologias e Abordagens Utilizadas
 
