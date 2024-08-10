@@ -4,7 +4,7 @@
 
 O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo permite a administração eficiente das informações de cada veículo, monitoramento em tempo real e geração de relatórios detalhados.
 
-## Tecnologias e Abordagens Utilizadas
+## Tecnologias Utilizadas
 
 - **Dart**: Linguagem de programação utilizada para o desenvolvimento do aplicativo.
 - **Flutter**: Framework para criar a interface do usuário e lógica do aplicativo.
