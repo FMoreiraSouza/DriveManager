@@ -1,0 +1,2 @@
+const String supabaseKey =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjb2FyZmN0eHNsZGphaWR4ZGlpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjMxNjAzMDIsImV4cCI6MjAzODczNjMwMn0.k44yGD2G63H-UKPGhZCCIai1bw6PpHntqsWuThp6LNY";
