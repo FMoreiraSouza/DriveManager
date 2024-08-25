@@ -1,7 +1,7 @@
 import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
 import 'package:drivemanager/presenter/routes/navigation_service.dart';
-import 'package:drivemanager/presenter/screens/fleet_list_screen.dart';
+import 'package:drivemanager/presenter/screens/fleet_screen.dart';
 import 'package:drivemanager/presenter/screens/map_screen.dart';
 import 'package:drivemanager/presenter/screens/report_screen.dart';
 import 'package:drivemanager/presenter/widgets/load_panel.dart';
@@ -20,10 +20,10 @@ class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   bool _isLoggingOut = false;
 
-    List<Map<String, String>> fleetVehicles = [];
+  List<Map<String, String>> fleetVehicles = [];
 
   final List<Widget> _pages = [
-    const FleetListScreen(),
+    const FleetScreen(),
     const ReportScreen(),
     const MapScreen(),
   ];

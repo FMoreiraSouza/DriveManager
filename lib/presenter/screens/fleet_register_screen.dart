@@ -25,8 +25,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
   final TextEditingController _cnfValidityController = TextEditingController();
   final TextEditingController _driverPhoneController = TextEditingController();
   final TextEditingController _trackerImeiController = TextEditingController();
-  final TextEditingController _trackingSystemNumberController =
-      TextEditingController();
+  final TextEditingController _trackingSystemNumberController = TextEditingController();
   final TextEditingController _observationsController = TextEditingController();
 
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -56,7 +55,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
     if (response == null) {
       NavigationService.goBack(result: newVehicle);
     } else {
-      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error?.message}');                  
+      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error?.message}');
     }
   }
 
@@ -178,21 +177,21 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
               //     ),
               //   ),
               // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _mileageController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Kilometragem Atual',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              //   keyboardType: TextInputType.number,
-              // ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _mileageController,
+                decoration: InputDecoration(
+                  labelText: 'Kilometragem Atual',
+                  labelStyle: TextStyle(color: Colors.grey.shade700),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: theme.hintColor),
+                  ),
+                ),
+                keyboardType: TextInputType.number,
+              ),
               // const SizedBox(height: 16.0),
               // TextFormField(
               //   controller: _loadCapacityController,

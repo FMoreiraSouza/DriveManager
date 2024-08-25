@@ -3,7 +3,7 @@ import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
 import 'package:drivemanager/presenter/routes/navigation_service.dart';
 import 'package:drivemanager/presenter/screens/about_screen.dart';
-import 'package:drivemanager/presenter/screens/fleet_list_screen.dart';
+import 'package:drivemanager/presenter/screens/fleet_screen.dart';
 import 'package:drivemanager/presenter/screens/fleet_register_screen.dart';
 import 'package:drivemanager/presenter/screens/home_screen.dart';
 import 'package:drivemanager/presenter/screens/login_screen.dart';
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const ProfileScreen(),
         '/about': (context) => const AboutScreen(),
         '/fleet-register': (context) => const FleetRegisterScreen(),
-        '/fleet-list': (context) => const FleetListScreen(),
+        '/fleet-list': (context) => const FleetScreen(),
         '/report': (context) => const ReportScreen(),
         '/map': (context) => const MapScreen(),
       },
