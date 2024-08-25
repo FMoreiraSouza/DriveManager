@@ -20,6 +20,8 @@ class HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   bool _isLoggingOut = false;
 
+    List<Map<String, String>> fleetVehicles = [];
+
   final List<Widget> _pages = [
     const FleetListScreen(),
     const ReportScreen(),

@@ -11,6 +11,10 @@ class NavigationService {
     return navigatorKey.currentState!.pushReplacementNamed(routeName, arguments: arguments);
   }
 
+    static void goBack({dynamic result}) {
+    navigatorKey.currentState!.pop(result);
+  }
+
   static void showSnackBar(String message) {
     final scaffoldMessenger = ScaffoldMessenger.of(navigatorKey.currentContext!);
     scaffoldMessenger.showSnackBar(SnackBar(content: Text(message)));
