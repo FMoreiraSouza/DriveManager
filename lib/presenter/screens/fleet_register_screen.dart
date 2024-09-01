@@ -14,19 +14,17 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
   final TextEditingController _plateController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
-  final TextEditingController _yearController = TextEditingController();
-  final TextEditingController _colorController = TextEditingController();
-  final TextEditingController _chassisController = TextEditingController();
-  final TextEditingController _fuelTypeController = TextEditingController();
   final TextEditingController _mileageController = TextEditingController();
-  final TextEditingController _loadCapacityController = TextEditingController();
-  final TextEditingController _driverNameController = TextEditingController();
-  final TextEditingController _cnfNumberController = TextEditingController();
-  final TextEditingController _cnfValidityController = TextEditingController();
-  final TextEditingController _driverPhoneController = TextEditingController();
   final TextEditingController _trackerImeiController = TextEditingController();
-  final TextEditingController _trackingSystemNumberController = TextEditingController();
-  final TextEditingController _observationsController = TextEditingController();
+  // final TextEditingController _yearController = TextEditingController();
+  // final TextEditingController _colorController = TextEditingController();
+  // final TextEditingController _chassisController = TextEditingController();
+  // final TextEditingController _fuelTypeController = TextEditingController();
+  // final TextEditingController _loadCapacityController = TextEditingController();
+  // final TextEditingController _driverNameController = TextEditingController();
+  // final TextEditingController _cnfNumberController = TextEditingController();
+  // final TextEditingController _cnfValidityController = TextEditingController();
+  // final TextEditingController _driverPhoneController = TextEditingController();
 
   final SupabaseClient _supabase = Supabase.instance.client;
 
@@ -35,19 +33,17 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
       'plate_number': _plateController.text,
       'brand': _brandController.text,
       'model': _modelController.text,
-      'year': _yearController.text,
-      'color': _colorController.text,
-      'chassis': _chassisController.text,
-      'fuel_type': _fuelTypeController.text,
       'mileage': _mileageController.text,
-      'load_capacity': _loadCapacityController.text,
-      'driver_name': _driverNameController.text,
-      'cnf_number': _cnfNumberController.text,
-      'cnf_validity': _cnfValidityController.text,
-      'driver_phone': _driverPhoneController.text,
       'tracker_imei': _trackerImeiController.text,
-      'tracking_system_number': _trackingSystemNumberController.text,
-      'observations': _observationsController.text,
+      // 'driver_name': _driverNameController.text,
+      // 'year': _yearController.text,
+      // 'color': _colorController.text,
+      // 'chassis': _chassisController.text,
+      // 'fuel_type': _fuelTypeController.text,
+      // 'load_capacity': _loadCapacityController.text,
+      // 'cnf_number': _cnfNumberController.text,
+      // 'cnf_validity': _cnfValidityController.text,
+      // 'driver_phone': _driverPhoneController.text,
     };
 
     final response = await _supabase.from('vehicles').insert(newVehicle);
@@ -192,7 +188,20 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                 ),
                 keyboardType: TextInputType.number,
               ),
-              // const SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                controller: _trackerImeiController,
+                decoration: InputDecoration(
+                  labelText: 'IMEI do Rastreador',
+                  labelStyle: TextStyle(color: Colors.grey.shade700),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: theme.hintColor),
+                  ),
+                ),
+              ),
               // TextFormField(
               //   controller: _loadCapacityController,
               //   decoration: InputDecoration(
@@ -264,49 +273,6 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
               //   keyboardType: TextInputType.phone,
               // ),
               // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _trackerImeiController,
-              //   decoration: InputDecoration(
-              //     labelText: 'IMEI do Rastreador',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _trackingSystemNumberController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Número do Sistema de Rastreamento',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _observationsController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Observações',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //     contentPadding: const EdgeInsets.fromLTRB(12.0, 16.0, 12.0, 12.0),
-              //   ),
-              //   maxLines: 3,
-              // ),
               const SizedBox(height: 32.0),
               ElevatedButton(
                 onPressed: () {

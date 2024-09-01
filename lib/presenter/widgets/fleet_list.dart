@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class FleetList extends StatelessWidget {
   const FleetList({
@@ -14,6 +15,8 @@ class FleetList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final NumberFormat mileageFormat = NumberFormat("#,##0.0", "pt_BR");
+
     return Stack(
       children: <Widget>[
         Positioned.fill(
@@ -71,7 +74,7 @@ class FleetList extends StatelessWidget {
                               width: 15,
                             ),
                             const Icon(Icons.emoji_transportation),
-                            Text(vehicle['mileage'].toString()),
+                            Text('${mileageFormat.format(vehicle['mileage'] ?? 0)} Km'),
                           ],
                         ),
                       ],
