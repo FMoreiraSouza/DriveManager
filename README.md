@@ -2,7 +2,7 @@
 
 ## Sobre o Aplicativo
 
-O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo tem como objetivo permitir a administração eficiente das informações de cada veículo, o monitoramento em tempo real e a geração de dados importantes.
+O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo tem como objetivo permitir a administração eficiente das informações de cada veículo, geração de diagnósticos de falhas e monitoramento em tempo real.
 
 ## Tecnologias Utilizadas
 
@@ -14,8 +14,8 @@ O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. De
 
 O aplicativo **Drive Manager** oferece as seguintes funcionalidades:
 
-- **Cadastro de Frota**: Adicione e gerencie veículos e motoristas, incluindo informações como status de funcionamento, chassi e IMEI do rastreador (gerado aleatoriamente no aplicativo, pois o rastreador real não está disponível).
-- **Acompanhamento em Tempo Real**: Monitore a localização dos veículos em um mapa em tempo real, utilizando a integração com o Google Maps.
+- **Cadastro de Frota**: Adicione e gerencie veículos, incluindo informações como status de funcionamento e IMEI do rastreador (gerado aleatoriamente no aplicativo, pois o rastreador real não está disponível).
+- **Acompanhamento em Tempo Real**: Monitore a movimentação em tempo real dos veículos em um painel de visualização ou em um mapa.
 
 ## Serviços Consumidos do Supabase
 
