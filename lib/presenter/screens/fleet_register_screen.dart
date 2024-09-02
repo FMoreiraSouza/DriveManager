@@ -59,7 +59,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
       appBar: AppBar(
         title: const Text('Cadastro de Frota'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         // Adiciona um padding ao corpo da tela.
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -137,6 +137,8 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
           ),
         ),
       ),
+      resizeToAvoidBottomInset:
+          true, // Garante que o conteúdo seja redimensionado para evitar sobreposição com o teclado
     );
   }
 }
