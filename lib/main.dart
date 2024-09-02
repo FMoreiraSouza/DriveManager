@@ -2,14 +2,14 @@ import 'package:drivemanager/core/constants/database_keys.dart';
 import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
 import 'package:drivemanager/presenter/routes/navigation_service.dart';
-import 'package:drivemanager/presenter/screens/about_screen.dart';
-import 'package:drivemanager/presenter/screens/fleet_screen.dart';
 import 'package:drivemanager/presenter/screens/fleet_register_screen.dart';
+import 'package:drivemanager/presenter/screens/fleet_screen.dart';
 import 'package:drivemanager/presenter/screens/home_screen.dart';
+import 'package:drivemanager/presenter/screens/info_screen.dart';
 import 'package:drivemanager/presenter/screens/login_screen.dart';
 import 'package:drivemanager/presenter/screens/map_screen.dart';
-import 'package:drivemanager/presenter/screens/profile_screen.dart';
-import 'package:drivemanager/presenter/screens/report_screen.dart';
+import 'package:drivemanager/presenter/screens/message_screen.dart';
+import 'package:drivemanager/presenter/widgets/fleet_list.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -53,11 +53,11 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(),
         '/home': (context) => HomeScreen(loginController: loginController),
-        '/profile': (context) => const ProfileScreen(),
-        '/about': (context) => const AboutScreen(),
+        '/info': (context) => const InfoScreen(),
         '/fleet-register': (context) => const FleetRegisterScreen(),
-        '/fleet-list': (context) => const FleetScreen(),
-        '/report': (context) => const ReportScreen(),
+        '/fleet': (context) => const FleetScreen(),
+        '/flee-list': (context) => const FleetList(),
+        '/messages': (context) => const MessageScreen(),
         '/map': (context) => const MapScreen(),
       },
     );

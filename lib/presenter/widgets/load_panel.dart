@@ -5,12 +5,10 @@ class LoadPanel extends StatelessWidget {
     super.key,
     required this.label,
     this.bgColor = Colors.black45,
-    this.textColor = Colors.white,
   });
 
   final String label;
   final Color bgColor;
-  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +20,12 @@ class LoadPanel extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const CircularProgressIndicator(color: Colors.white),
+            const CircularProgressIndicator(),
             const SizedBox(height: 16),
             Text(
               label,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
-                color: textColor,
               ),
             ),
           ],

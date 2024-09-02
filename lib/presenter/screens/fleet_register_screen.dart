@@ -1,292 +1,137 @@
+// Importa pacotes necessários para o funcionamento do widget.
 import 'package:drivemanager/presenter/routes/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// Define a tela para registrar um novo veículo na frota.
 class FleetRegisterScreen extends StatefulWidget {
+  // Construtor padrão para a tela de registro de frota.
   const FleetRegisterScreen({super.key});
 
   @override
   FleetRegisterScreenState createState() => FleetRegisterScreenState();
 }
 
+// Estado da tela de registro de frota.
 class FleetRegisterScreenState extends State<FleetRegisterScreen> {
+  // Chave para identificar o formulário.
   final _formKey = GlobalKey<FormState>();
+
+  // Controladores para os campos de texto do formulário.
   final TextEditingController _plateController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _mileageController = TextEditingController();
   final TextEditingController _trackerImeiController = TextEditingController();
-  // final TextEditingController _yearController = TextEditingController();
-  // final TextEditingController _colorController = TextEditingController();
-  // final TextEditingController _chassisController = TextEditingController();
-  // final TextEditingController _fuelTypeController = TextEditingController();
-  // final TextEditingController _loadCapacityController = TextEditingController();
-  // final TextEditingController _driverNameController = TextEditingController();
-  // final TextEditingController _cnfNumberController = TextEditingController();
-  // final TextEditingController _cnfValidityController = TextEditingController();
-  // final TextEditingController _driverPhoneController = TextEditingController();
 
+  // Instância do cliente Supabase para interagir com o banco de dados.
   final SupabaseClient _supabase = Supabase.instance.client;
 
+  // Função assíncrona para salvar os dados do veículo.
   Future<void> _saveVehicle() async {
+    // Cria um mapa com os dados do veículo a partir dos controladores.
     final newVehicle = {
       'plate_number': _plateController.text,
       'brand': _brandController.text,
       'model': _modelController.text,
       'mileage': _mileageController.text,
       'tracker_imei': _trackerImeiController.text,
-      // 'driver_name': _driverNameController.text,
-      // 'year': _yearController.text,
-      // 'color': _colorController.text,
-      // 'chassis': _chassisController.text,
-      // 'fuel_type': _fuelTypeController.text,
-      // 'load_capacity': _loadCapacityController.text,
-      // 'cnf_number': _cnfNumberController.text,
-      // 'cnf_validity': _cnfValidityController.text,
-      // 'driver_phone': _driverPhoneController.text,
     };
 
+    // Insere os dados do veículo na tabela 'vehicles' do banco de dados.
     final response = await _supabase.from('vehicles').insert(newVehicle);
 
+    // Verifica se a resposta é nula, indicando sucesso.
     if (response == null) {
+      // Retorna à tela anterior com os dados do novo veículo.
       NavigationService.goBack(result: newVehicle);
     } else {
+      // Exibe uma mensagem de erro caso a inserção falhe.
       NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error?.message}');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
+    // Constrói o layout da tela.
     return Scaffold(
+      // Configura a AppBar da tela com o título.
       appBar: AppBar(
         title: const Text('Cadastro de Frota'),
       ),
       body: Padding(
+        // Adiciona um padding ao corpo da tela.
         padding: const EdgeInsets.all(16.0),
         child: Form(
+          // Define o formulário com a chave '_formKey'.
           key: _formKey,
-          child: ListView(
-            children: <Widget>[
+          child: Column(
+            children: [
+              // Campo para a placa do veículo.
               TextFormField(
                 controller: _plateController,
-                decoration: InputDecoration(
-                  labelText: 'Número de Placa',
-                  labelStyle: TextStyle(color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.hintColor),
-                  ),
-                ),
+                decoration: const InputDecoration(labelText: 'Placa'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Por favor, insira a placa do veículo.';
+                    return 'Informe a placa do veículo';
+                  }
+                  return null;
+                },
+              ),
+              // Campo para a marca do veículo.
+              TextFormField(
+                controller: _brandController,
+                decoration: const InputDecoration(labelText: 'Marca'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe a marca do veículo';
+                  }
+                  return null;
+                },
+              ),
+              // Campo para o modelo do veículo.
+              TextFormField(
+                controller: _modelController,
+                decoration: const InputDecoration(labelText: 'Modelo'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe o modelo do veículo';
+                  }
+                  return null;
+                },
+              ),
+              // Campo para a quilometragem do veículo.
+              TextFormField(
+                controller: _mileageController,
+                decoration: const InputDecoration(labelText: 'Quilometragem'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe a quilometragem do veículo';
+                  }
+                  return null;
+                },
+              ),
+              // Campo para o IMEI do rastreador.
+              TextFormField(
+                controller: _trackerImeiController,
+                decoration: const InputDecoration(labelText: 'IMEI do Rastreador'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Informe o IMEI do rastreador';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _brandController,
-                decoration: InputDecoration(
-                  labelText: 'Marca',
-                  labelStyle: TextStyle(color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.hintColor),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _modelController,
-                decoration: InputDecoration(
-                  labelText: 'Modelo',
-                  labelStyle: TextStyle(color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.hintColor),
-                  ),
-                ),
-              ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _yearController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Ano de Fabricação',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              //   keyboardType: TextInputType.number,
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _colorController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Cor',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _chassisController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Número de Chassi',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _fuelTypeController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Tipo de Combustível',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _mileageController,
-                decoration: InputDecoration(
-                  labelText: 'Kilometragem Atual',
-                  labelStyle: TextStyle(color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.hintColor),
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _trackerImeiController,
-                decoration: InputDecoration(
-                  labelText: 'IMEI do Rastreador',
-                  labelStyle: TextStyle(color: Colors.grey.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: theme.hintColor),
-                  ),
-                ),
-              ),
-              // TextFormField(
-              //   controller: _loadCapacityController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Capacidade de Carga',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _driverNameController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Nome do Motorista',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _cnfNumberController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Número da CNH',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _cnfValidityController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Data de Validade da CNH',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              // ),
-              // const SizedBox(height: 16.0),
-              // TextFormField(
-              //   controller: _driverPhoneController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Telefone do Motorista',
-              //     labelStyle: TextStyle(color: Colors.grey.shade700),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.circular(8.0),
-              //     ),
-              //     focusedBorder: OutlineInputBorder(
-              //       borderSide: BorderSide(color: theme.hintColor),
-              //     ),
-              //   ),
-              //   keyboardType: TextInputType.phone,
-              // ),
-              // const SizedBox(height: 16.0),
-              const SizedBox(height: 32.0),
+              // Botão para salvar as informações do veículo.
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
                     _saveVehicle();
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.hintColor,
-                ),
-                child: const Text(
-                  'Salvar',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
+                child: const Text('Salvar'),
               ),
             ],
           ),
