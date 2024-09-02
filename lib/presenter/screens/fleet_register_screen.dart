@@ -35,7 +35,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
       'brand': _brandController.text,
       'model': _modelController.text,
       'mileage': _mileageController.text,
-      'tracker_imei': _trackerImeiController.text,
+      'imei': _trackerImeiController.text,
     };
 
     // Insere os dados do veículo na tabela 'vehicles' do banco de dados.
@@ -47,7 +47,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
       NavigationService.goBack(result: newVehicle);
     } else {
       // Exibe uma mensagem de erro caso a inserção falhe.
-      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error?.message}');
+      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.message}');
     }
   }
 
@@ -131,7 +131,10 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                     _saveVehicle();
                   }
                 },
-                child: const Text('Salvar'),
+                child: const Text(
+                  'Salvar',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),

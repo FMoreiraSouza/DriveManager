@@ -19,6 +19,11 @@ class AppTheme {
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: Colors.grey,
       ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all(Colors.green),
+        ),
+      ),
     );
   }
 }
