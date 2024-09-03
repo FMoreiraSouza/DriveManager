@@ -26,3 +26,7 @@ O aplicativo **Drive Manager** oferece as seguintes funcionalidades:
 ## Inovações
 
 - **Google Maps**: Conexão com a API do Google Maps para o monitoramento em tempo real da localização dos veículos.
+
+## Ambiente de Desenvolvimento
+
+- **IDE:** Visual Studio Code.
