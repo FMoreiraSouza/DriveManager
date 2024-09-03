@@ -1,8 +1,9 @@
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
-import 'package:drivemanager/presenter/widgets/load_panel.dart';
+import 'package:drivemanager/core/utils/load_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+// Tela de login do usuário
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -11,37 +12,39 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  late LoginController _loginController;
-  bool _isLoading = false;
+  final _emailController = TextEditingController(); // Controlador para o campo de email
+  final _passwordController = TextEditingController(); // Controlador para o campo de senha
+  late LoginController _loginController; // Controlador de login
+  bool _isLoading = false; // Indicador de carregamento
 
   @override
   void initState() {
     super.initState();
-    _loginController = LoginController(Supabase.instance.client);
+    _loginController = LoginController(
+        Supabase.instance.client); // Inicializa o controlador com o cliente Supabase
   }
 
+  // Função para lidar com o login
   Future<void> _handleSignIn() async {
     setState(() {
-      _isLoading = true;
+      _isLoading = true; // Inicia o carregamento
     });
 
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1)); // Simula um atraso
 
     await _loginController.signIn(
-      email: _emailController.text,
-      password: _passwordController.text,
+      email: _emailController.text, // Email do usuário
+      password: _passwordController.text, // Senha do usuário
     );
 
     setState(() {
-      _isLoading = false;
+      _isLoading = false; // Finaliza o carregamento
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final theme = Theme.of(context); // Obtém o tema atual
 
     return Scaffold(
       body: Stack(
@@ -55,44 +58,39 @@ class LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: 300.0,
                     height: 300.0,
-                    child: Image.asset('assets/images/drive_manager_logo.png'),
+                    child: Image.asset('assets/images/drive_manager_logo.png'), // Logo da aplicação
                   ),
                   const SizedBox(height: 32.0),
                   TextField(
-                    controller: _emailController,
+                    controller: _emailController, // Controlador do campo de email
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.grey.shade700),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: theme.hintColor),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: Icon(
+                        Icons.email,
+                        color: theme.primaryColor, // Cor do ícone do email
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 16.0),
                   TextField(
-                    controller: _passwordController,
+                    controller: _passwordController, // Controlador do campo de senha
+                    obscureText: true, // Oculta o texto da senha
                     decoration: InputDecoration(
                       labelText: 'Senha',
-                      labelStyle: TextStyle(color: Colors.grey.shade700),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: theme.hintColor),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: Icon(
+                        Icons.lock,
+                        color: theme.primaryColor, // Cor do ícone da senha
                       ),
                     ),
-                    obscureText: true,
                   ),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
-                    onPressed: _isLoading ? null : _handleSignIn,
-                    style: ElevatedButton.styleFrom(backgroundColor: theme.hintColor),
+                    onPressed: _handleSignIn, // Função de login
                     child: const Text(
                       'Entrar',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -102,7 +100,6 @@ class LoginScreenState extends State<LoginScreen> {
           if (_isLoading)
             const LoadPanel(
               label: 'Carregando',
-              bgColor: Colors.black54,
             ),
         ],
       ),

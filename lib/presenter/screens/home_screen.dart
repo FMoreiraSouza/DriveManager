@@ -1,11 +1,9 @@
-import 'package:drivemanager/core/themes/app_theme.dart';
-import 'package:drivemanager/presenter/controllers/login_controller.dart';
-import 'package:drivemanager/presenter/routes/navigation_service.dart';
-import 'package:drivemanager/presenter/screens/fleet_list_screen.dart';
-import 'package:drivemanager/presenter/screens/map_screen.dart';
-import 'package:drivemanager/presenter/screens/report_screen.dart';
-import 'package:drivemanager/presenter/widgets/load_panel.dart';
 import 'package:flutter/material.dart';
+import 'package:drivemanager/core/themes/app_theme.dart';
+import 'package:drivemanager/presenter/controllers/home_controller.dart';
+import 'package:drivemanager/presenter/controllers/login_controller.dart';
+import 'package:drivemanager/presenter/screens/message_screen.dart';
+import 'package:drivemanager/core/utils/load_panel.dart';
 
 class HomeScreen extends StatefulWidget {
   final LoginController loginController;
@@ -17,82 +15,116 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  late HomeController _homeController;
   bool _isLoggingOut = false;
 
-  final List<Widget> _pages = [
-    const FleetListScreen(),
-    const ReportScreen(),
-    const MapScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
+  @override
+  void initState() {
+    super.initState();
+    _homeController = HomeController(
+      widget.loginController,
+      (isLoggingOut) {
+        if (mounted) {
+          // Verifica se o widget está montado
+          setState(() {
+            _isLoggingOut = isLoggingOut;
+          });
+        }
+      },
+    );
+    _homeController.fetchMessages().then((_) {
+      if (mounted) {
+        // Verifica se o widget está montado
+        setState(() {});
+      }
+    });
+    _homeController.subscribeNotifications((message) {
+      if (mounted) {
+        // Verifica se o widget está montado
+        _showSnackBar(message);
+      }
     });
   }
 
-  Future<void> _handleMenuSelection(String result) async {
-    switch (result) {
-      case 'cadastro_frotas':
-        NavigationService.pushNamed('/fleet-register');
-        break;
-      case 'meu_perfil':
-        NavigationService.pushNamed('/profile');
-        break;
-      case 'sobre':
-        NavigationService.pushNamed('/about');
-        break;
-      case 'sair':
-        setState(() {
-          _isLoggingOut = true;
-        });
+  @override
+  void dispose() {
+    _homeController.unsubscribeNotifications();
+    super.dispose();
+  }
 
-        await widget.loginController.signOut();
-
-        await Future.delayed(const Duration(seconds: 1));
-
-        if (mounted) {
-          setState(() {
-            _isLoggingOut = false;
-          });
-
-          NavigationService.pushReplacementNamed('/login');
-        }
-        break;
-    }
+  void _showSnackBar(String message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        // Verifica se o widget está montado
+        final scaffoldMessenger = ScaffoldMessenger.of(context);
+        final snackBar = SnackBar(
+          content: Text(
+            message,
+            style: const TextStyle(color: Colors.black),
+          ),
+          backgroundColor: Colors.grey.shade200,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 5),
+          action: SnackBarAction(
+            label: 'Fechar',
+            textColor: Colors.black,
+            onPressed: () {
+              scaffoldMessenger.hideCurrentSnackBar();
+            },
+          ),
+        );
+        scaffoldMessenger.showSnackBar(snackBar);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    String appBarTitle;
+    switch (_homeController.selectedIndex) {
+      case 0:
+        appBarTitle = 'Frotas registradas';
+        break;
+      case 1:
+        appBarTitle = 'Mapa';
+        break;
+      default:
+        appBarTitle = 'Frotas registradas';
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Frotas registradas'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.message),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MessageScreen(messages: _homeController.messages),
+                  ),
+                );
+              },
+            ),
+            Center(child: Text(appBarTitle)),
+          ],
+        ),
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onSelected: _handleMenuSelection,
+            onSelected: (result) {
+              _homeController.handleMenuSelection(result);
+            },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
-                value: 'cadastro_frotas',
-                child: ListTile(
-                  leading: Icon(Icons.plus_one),
-                  title: Text('Cadastro de Veículos'),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'meu_perfil',
-                child: ListTile(
-                  leading: Icon(Icons.person),
-                  title: Text('Meu Perfil'),
-                ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'sobre',
+                value: 'info',
                 child: ListTile(
                   leading: Icon(Icons.info),
-                  title: Text('Sobre'),
+                  title: Text('Informativo'),
                 ),
               ),
               const PopupMenuItem<String>(
@@ -108,7 +140,7 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       body: Stack(
         children: [
-          _pages[_selectedIndex],
+          _homeController.pages[_homeController.selectedIndex],
           if (_isLoggingOut)
             const LoadPanel(
               label: 'Saindo...',
@@ -117,16 +149,16 @@ class HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        currentIndex: _homeController.selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _homeController.selectedIndex = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.directions_car),
             label: 'Frotas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
-            label: 'Relatórios',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
