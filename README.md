@@ -1,6 +1,6 @@
 <img src="assets/images/drive_manager_logo.png" alt="Logomarca" width="500" height="550">
 
-## Sobre o Aplicativo
+## Sobre
 
 O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo tem como objetivo permitir a administração eficiente das informações de cada veículo, geração de diagnósticos de falhas e monitoramento em tempo real.
 
