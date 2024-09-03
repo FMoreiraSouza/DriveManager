@@ -1,73 +1,57 @@
-// Importa pacotes necessários para o funcionamento do widget.
-import 'package:drivemanager/presenter/routes/navigation_service.dart';
+import 'package:drivemanager/presenter/controllers/fleet_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Define a tela para registrar um novo veículo na frota.
+// Tela para o registro de frota
 class FleetRegisterScreen extends StatefulWidget {
-  // Construtor padrão para a tela de registro de frota.
   const FleetRegisterScreen({super.key});
 
   @override
   FleetRegisterScreenState createState() => FleetRegisterScreenState();
 }
 
-// Estado da tela de registro de frota.
 class FleetRegisterScreenState extends State<FleetRegisterScreen> {
-  // Chave para identificar o formulário.
+  // Chave global para o formulário
   final _formKey = GlobalKey<FormState>();
 
-  // Controladores para os campos de texto do formulário.
+  // Controladores para os campos de texto
   final TextEditingController _plateController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _mileageController = TextEditingController();
   final TextEditingController _trackerImeiController = TextEditingController();
 
-  // Instância do cliente Supabase para interagir com o banco de dados.
-  final SupabaseClient _supabase = Supabase.instance.client;
+  late FleetRegisterController _controller;
 
-  // Função assíncrona para salvar os dados do veículo.
-  Future<void> _saveVehicle() async {
-    // Cria um mapa com os dados do veículo a partir dos controladores.
-    final newVehicle = {
-      'plate_number': _plateController.text,
-      'brand': _brandController.text,
-      'model': _modelController.text,
-      'mileage': _mileageController.text,
-      'imei': _trackerImeiController.text,
-    };
-
-    // Insere os dados do veículo na tabela 'vehicles' do banco de dados.
-    final response = await _supabase.from('vehicles').insert(newVehicle);
-
-    // Verifica se a resposta é nula, indicando sucesso.
-    if (response == null) {
-      // Retorna à tela anterior com os dados do novo veículo.
-      NavigationService.goBack(result: newVehicle);
-    } else {
-      // Exibe uma mensagem de erro caso a inserção falhe.
-      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.message}');
-    }
+  @override
+  void initState() {
+    super.initState();
+    // Inicializa o cliente Supabase
+    final supabase = Supabase.instance.client;
+    // Cria uma instância do controlador de registro de frota
+    _controller = FleetRegisterController(
+      supabase,
+      _plateController,
+      _brandController,
+      _modelController,
+      _mileageController,
+      _trackerImeiController,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Constrói o layout da tela.
     return Scaffold(
-      // Configura a AppBar da tela com o título.
       appBar: AppBar(
         title: const Text('Cadastro de Frota'),
       ),
       body: SingleChildScrollView(
-        // Adiciona um padding ao corpo da tela.
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          // Define o formulário com a chave '_formKey'.
           key: _formKey,
           child: Column(
             children: [
-              // Campo para a placa do veículo.
+              // Campo para a placa do veículo
               TextFormField(
                 controller: _plateController,
                 decoration: const InputDecoration(labelText: 'Placa'),
@@ -78,7 +62,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para a marca do veículo.
+              // Campo para a marca do veículo
               TextFormField(
                 controller: _brandController,
                 decoration: const InputDecoration(labelText: 'Marca'),
@@ -89,7 +73,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para o modelo do veículo.
+              // Campo para o modelo do veículo
               TextFormField(
                 controller: _modelController,
                 decoration: const InputDecoration(labelText: 'Modelo'),
@@ -100,7 +84,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para a quilometragem do veículo.
+              // Campo para a quilometragem do veículo
               TextFormField(
                 controller: _mileageController,
                 decoration: const InputDecoration(labelText: 'Quilometragem'),
@@ -112,7 +96,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para o IMEI do rastreador.
+              // Campo para o IMEI do rastreador
               TextFormField(
                 controller: _trackerImeiController,
                 decoration: const InputDecoration(labelText: 'IMEI do Rastreador'),
@@ -124,11 +108,11 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                 },
               ),
               const SizedBox(height: 16.0),
-              // Botão para salvar as informações do veículo.
+              // Botão para salvar os dados do veículo
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
-                    _saveVehicle();
+                    _controller.saveVehicle();
                   }
                 },
                 child: const Text(
@@ -140,8 +124,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
           ),
         ),
       ),
-      resizeToAvoidBottomInset:
-          true, // Garante que o conteúdo seja redimensionado para evitar sobreposição com o teclado
+      resizeToAvoidBottomInset: true, // Evita que o teclado sobreponha o conteúdo
     );
   }
 }

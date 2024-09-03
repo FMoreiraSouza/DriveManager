@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class LoginController {
   final SupabaseClient _supabaseClient; // Cliente Supabase
 
+  // Construtor que recebe o cliente Supabase
   LoginController(this._supabaseClient);
 
   // Função para autenticar o usuário

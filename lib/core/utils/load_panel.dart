@@ -24,9 +24,7 @@ class LoadPanel extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               label,
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),

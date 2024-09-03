@@ -1,5 +1,5 @@
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
-import 'package:drivemanager/presenter/widgets/load_panel.dart';
+import 'package:drivemanager/core/utils/load_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -62,41 +62,35 @@ class LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 32.0),
                   TextField(
-                    controller: _emailController,
+                    controller: _emailController, // Controlador do campo de email
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.grey.shade700),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: theme.hintColor),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: Icon(
+                        Icons.email,
+                        color: theme.primaryColor, // Cor do ícone do email
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 16.0),
                   TextField(
-                    controller: _passwordController,
+                    controller: _passwordController, // Controlador do campo de senha
+                    obscureText: true, // Oculta o texto da senha
                     decoration: InputDecoration(
                       labelText: 'Senha',
-                      labelStyle: TextStyle(color: Colors.grey.shade700),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: theme.hintColor),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: Icon(
+                        Icons.lock,
+                        color: theme.primaryColor, // Cor do ícone da senha
                       ),
                     ),
-                    obscureText: true, // Oculta o texto da senha
                   ),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
-                    onPressed:
-                        _isLoading ? null : _handleSignIn, // Desabilita o botão enquanto carrega
-                    style: ElevatedButton.styleFrom(backgroundColor: theme.hintColor),
+                    onPressed: _handleSignIn, // Função de login
                     child: const Text(
                       'Entrar',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ],
@@ -106,7 +100,6 @@ class LoginScreenState extends State<LoginScreen> {
           if (_isLoading)
             const LoadPanel(
               label: 'Carregando',
-              bgColor: Colors.black54,
             ),
         ],
       ),

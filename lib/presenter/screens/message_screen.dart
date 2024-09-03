@@ -1,18 +1,21 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:drivemanager/presenter/controllers/message_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Tela para exibir uma lista de mensagens
 class MessageScreen extends StatelessWidget {
   const MessageScreen({
     super.key,
-    this.messages,
+    this.messages, // Lista opcional de mensagens a ser exibida
   });
 
-  // Lista de mensagens a ser exibida
-  final List<Map<String, dynamic>>? messages;
+  final List<Map<String, dynamic>>? messages; // Lista de mensagens
 
   @override
   Widget build(BuildContext context) {
+    final SupabaseClient supabaseClient = Supabase.instance.client; // Obtém o cliente Supabase
+    final MessageController messageController =
+        MessageController(supabaseClient); // Inicializa o controlador de mensagens
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mensagens'), // Título da AppBar
@@ -41,85 +44,13 @@ class MessageScreen extends StatelessWidget {
             trailing: TextButton(
               onPressed: () {
                 // Solicita suporte quando o botão é pressionado
-                _showSupportDialog(context, message['plate_number']);
+                messageController.requestSupport(context, message['plate_number']);
               },
               child: const Text('Solicitar Suporte'),
             ),
           );
         }).toList(),
       ),
-    );
-  }
-
-  // Exibe um diálogo para solicitar suporte
-  Future<void> _showSupportDialog(BuildContext context, String plateNumber) async {
-    final SupabaseClient supabaseClient = Supabase.instance.client;
-
-    // Consulta para obter o IMEI do veículo
-    final response = await supabaseClient
-        .from('vehicles')
-        .select('imei')
-        .eq('plate_number', plateNumber)
-        .single();
-
-    final imei = response['imei'];
-
-    // Atualiza o status do veículo
-    final updateResponse = await supabaseClient
-        .from('vehicle_coordinates')
-        .update({'isStopped': false}).eq('imei', imei);
-
-    if (updateResponse == null) {
-      // Exibe mensagem de sucesso
-      showDialog(
-        // ignore: use_build_context_synchronously
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Solicitação de Suporte para $plateNumber'),
-            content: const Row(
-              children: [
-                Icon(Icons.check, color: Colors.green),
-                SizedBox(width: 8),
-                Expanded(child: Text('Suporte enviado com sucesso!')),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Fecha o diálogo
-                },
-                child: const Text('Ok'),
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      // Exibe mensagem de erro
-      // ignore: use_build_context_synchronously
-      showErrorDialog(context, plateNumber);
-    }
-  }
-
-  // Exibe um diálogo de erro
-  void showErrorDialog(BuildContext context, String plateNumber) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Erro ao solicitar suporte para $plateNumber'),
-          content: const Text('Ocorreu um erro ao tentar enviar a solicitação de suporte.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
-              },
-              child: const Text('Ok'),
-            ),
-          ],
-        );
-      },
     );
   }
 }
