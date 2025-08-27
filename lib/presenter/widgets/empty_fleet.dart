@@ -32,6 +32,7 @@ class EmptyFleet extends StatelessWidget {
                     '/fleet-register'); // Navega para a tela de registro de frota.
               },
               child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.arrow_forward, color: Colors.green), // Ícone de navegação.
                   SizedBox(width: 8.0),

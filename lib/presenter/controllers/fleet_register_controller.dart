@@ -33,7 +33,7 @@ class FleetRegisterController {
 
     final response = await _supabase.from('vehicles').insert(newVehicle);
 
-    if (response.error == null) {
+    if (response == null) {
       NavigationService.goBack(result: newVehicle);
     } else {
       NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error!.message}');

@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
     final supabaseClient = Supabase.instance.client; // Obtém o cliente Supabase
     final loginController = LoginController(supabaseClient); // Inicializa o controlador de login
     return MaterialApp(
-      title: 'Fleet Management', // Título do aplicativo
+      title: 'Drive Ma', // Título do aplicativo
       theme: AppTheme.theme, // Tema do aplicativo
       debugShowCheckedModeBanner: false, // Desativa a faixa de depuração
       navigatorKey: NavigationService.navigatorKey, // Configura a chave do navegador global
