@@ -11,6 +11,7 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
+      case '/login':
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/home':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
@@ -23,15 +24,16 @@ class AppRoutes {
       case '/messages':
         return MaterialPageRoute(
           builder: (_) => const MessageScreen(
-            messages: [], // Substituir por lista de notificações, se necessário
+            messages: [],
           ),
         );
       case '/info':
         return MaterialPageRoute(builder: (_) => const InfoScreen());
       default:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text('Rota não encontrada')),
+          builder: (_) => Scaffold(
+            appBar: AppBar(title: const Text('Erro')),
+            body: const Center(child: Text('Rota não encontrada')),
           ),
         );
     }
@@ -40,6 +42,7 @@ class AppRoutes {
   static Map<String, WidgetBuilder> getRoutes() {
     return {
       '/': (_) => const LoginScreen(),
+      '/login': (_) => const LoginScreen(),
       '/home': (_) => const HomeScreen(),
       '/fleet': (_) => const FleetScreen(),
       '/fleet_register': (_) => const FleetRegisterScreen(),

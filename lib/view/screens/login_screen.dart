@@ -1,10 +1,8 @@
-import 'package:drivemanager/data/repository/auth_repository.dart';
-import 'package:drivemanager/data/repository/user_repository.dart';
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
 import 'package:drivemanager/core/utils/load_panel.dart';
+import 'package:drivemanager/routes/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:get_storage/get_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,19 +12,49 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   late LoginController _loginController;
   bool _isLoading = false;
+  bool _checkingAuth = true;
+  String _email = '';
+  String _password = '';
+
+  // FocusNodes para controle de foco
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     final supabase = Supabase.instance.client;
-    _loginController = LoginController(
-      authRepository: AuthRepositoryImpl(supabase),
-      userRepository: UserRepositoryImpl(GetStorage()),
-    );
+    _loginController = LoginController(supabase: supabase);
+
+    // Verifica se o usuário já está autenticado
+    _checkAuthentication();
+  }
+
+  Future<void> _checkAuthentication() async {
+    try {
+      final isAuthenticated = await _loginController.isAuthenticated();
+      if (isAuthenticated && mounted) {
+        // Se já estiver autenticado, redireciona para home
+        NavigationService.pushReplacementNamed('/home');
+      }
+    } catch (e) {
+      throw Exception('Erro ao verificar autenticação: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _checkingAuth = false;
+        });
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
   }
 
   Future<void> _handleSignIn() async {
@@ -36,23 +64,44 @@ class LoginScreenState extends State<LoginScreen> {
 
     try {
       await _loginController.signIn(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _email,
+        password: _password,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erro ao fazer login: $e')),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao fazer login: $e')),
+        );
+      }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
+  }
+
+  void _handleEmailSubmitted(String value) {
+    _passwordFocusNode.requestFocus();
+  }
+
+  void _handlePasswordSubmitted(String value) {
+    _passwordFocusNode.unfocus();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // Mostra loading enquanto verifica autenticação
+    if (_checkingAuth) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return Scaffold(
       body: Stack(
@@ -70,7 +119,10 @@ class LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 32.0),
                   TextField(
-                    controller: _emailController,
+                    focusNode: _emailFocusNode,
+                    onChanged: (value) => _email = value,
+                    onSubmitted: _handleEmailSubmitted,
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: const OutlineInputBorder(),
@@ -82,7 +134,10 @@ class LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16.0),
                   TextField(
-                    controller: _passwordController,
+                    focusNode: _passwordFocusNode,
+                    onChanged: (value) => _password = value,
+                    onSubmitted: _handlePasswordSubmitted,
+                    textInputAction: TextInputAction.done,
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Senha',
@@ -112,12 +167,5 @@ class LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
   }
 }

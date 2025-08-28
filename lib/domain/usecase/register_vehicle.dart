@@ -14,7 +14,7 @@ class RegisterVehicle {
     required int? imei,
   }) async {
     final vehicle = Vehicle(
-      id: 0, // ID será gerado pelo Supabase
+      id: 0,
       plateNumber: plateNumber,
       brand: brand,
       model: model,

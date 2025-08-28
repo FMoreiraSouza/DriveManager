@@ -1,44 +1,51 @@
-import 'package:drivemanager/data/repository/auth_repository.dart';
-import 'package:drivemanager/data/repository/user_repository.dart';
-import 'package:drivemanager/domain/usecase/sign_in.dart';
-import 'package:drivemanager/domain/usecase/sign_out.dart';
-import 'package:drivemanager/domain/usecase/check_authentication.dart';
 import 'package:drivemanager/routes/navigation_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginController {
-  final SignIn _signIn;
-  final SignOut _signOut;
-  final CheckAuthentication _checkAuthentication;
+  final SupabaseClient _supabase;
 
   LoginController({
-    required AuthRepository authRepository,
-    required UserRepository userRepository,
-  })  : _signIn = SignIn(authRepository, userRepository),
-        _signOut = SignOut(authRepository),
-        _checkAuthentication = CheckAuthentication(authRepository);
+    required SupabaseClient supabase,
+  }) : _supabase = supabase;
 
   Future<void> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      await _signIn.execute(email: email, password: password);
+      final response = await _supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      if (response.user == null) {
+        throw Exception('Falha no login: usuário não retornado');
+      }
+
+      // O Supabase gerencia automaticamente a sessão persistida
       NavigationService.pushReplacementNamed('/home');
     } catch (e) {
       NavigationService.showSnackBar('Erro ao fazer login: $e');
+      rethrow;
     }
   }
 
   Future<void> signOut() async {
     try {
-      await _signOut.execute();
+      await _supabase.auth.signOut();
       NavigationService.pushReplacementNamed('/login');
     } catch (e) {
       NavigationService.showSnackBar('Erro ao fazer logout: $e');
+      rethrow;
     }
   }
 
   Future<bool> isAuthenticated() async {
-    return await _checkAuthentication.execute();
+    try {
+      final session = _supabase.auth.currentSession;
+      return session != null;
+    } catch (e) {
+      return false;
+    }
   }
 }

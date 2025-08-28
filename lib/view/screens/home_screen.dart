@@ -25,24 +25,28 @@ class HomeScreenState extends State<HomeScreen> {
     _homeController = HomeController(
       notificationRepository: NotificationRepositoryImpl(supabase),
       authRepository: AuthRepositoryImpl(supabase),
-      onLogoutStatusChanged: (isLoggingOut) {
-        if (mounted) {
-          setState(() {
-            _isLoggingOut = isLoggingOut;
-          });
-        }
-      },
+      onLogoutStatusChanged: _handleLogoutStatusChanged,
     );
     _homeController.fetchMessages().then((_) {
       if (mounted) {
         setState(() {});
       }
     });
-    _homeController.subscribeNotifications((message) {
-      if (mounted) {
-        _showSnackBar(message);
-      }
-    });
+    _homeController.subscribeNotifications(_handleNotification);
+  }
+
+  void _handleLogoutStatusChanged(bool isLoggingOut) {
+    if (mounted) {
+      setState(() {
+        _isLoggingOut = isLoggingOut;
+      });
+    }
+  }
+
+  void _handleNotification(String message) {
+    if (mounted) {
+      _showSnackBar(message);
+    }
   }
 
   @override
@@ -74,6 +78,13 @@ class HomeScreenState extends State<HomeScreen> {
         scaffoldMessenger.showSnackBar(snackBar);
       }
     });
+  }
+
+  Future<void> _handleMenuSelection(String result) async {
+    await _homeController.handleMenuSelection(result);
+    if (result == 'sair' && mounted) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
   }
 
   @override
@@ -116,14 +127,7 @@ class HomeScreenState extends State<HomeScreen> {
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onSelected: (result) async {
-              await _homeController.handleMenuSelection(result);
-              if (result == 'sair') {
-                if (mounted) {
-                  Navigator.pushReplacementNamed(context, '/login');
-                }
-              }
-            },
+            onSelected: _handleMenuSelection,
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
                 value: 'info',

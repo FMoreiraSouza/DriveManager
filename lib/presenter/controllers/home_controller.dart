@@ -37,7 +37,6 @@ class HomeController {
     try {
       messages = await _fetchNotifications.execute();
     } catch (e) {
-      print('Erro ao buscar mensagens: $e');
       throw Exception('Erro ao buscar mensagens: $e');
     }
   }
@@ -56,7 +55,7 @@ class HomeController {
     try {
       await _handleMenuSelection.execute(result);
     } catch (e) {
-      print('Erro ao processar seleção do menu: $e');
+      throw Exception('Erro ao processar seleção do menu: $e');
     } finally {
       isLoggingOut = false;
       onLogoutStatusChanged(isLoggingOut);

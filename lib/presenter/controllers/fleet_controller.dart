@@ -38,7 +38,6 @@ class FleetController {
     try {
       fleetList = await _fetchFleetList.execute();
     } catch (e) {
-      print('Erro ao buscar lista de veículos: $e');
       throw Exception('Erro ao buscar lista de veículos: $e');
     } finally {
       isLoading = false;
@@ -51,7 +50,6 @@ class FleetController {
       coordinatesList = await _fetchCoordinatesList.execute();
       onCoordinatesUpdated();
     } catch (e) {
-      print('Erro ao buscar coordenadas: $e');
       throw Exception('Erro ao buscar coordenadas: $e');
     }
   }

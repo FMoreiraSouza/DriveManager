@@ -83,17 +83,6 @@ class FleetList extends StatelessWidget {
                           Text('${mileageFormat.format(mileage)} Km'),
                         ],
                       ),
-                      Text('${vehicle.brand} ${vehicle.model}'),
-                      if (vehicle.imei == null)
-                        const Text(
-                          'IMEI não disponível',
-                          style: TextStyle(color: Colors.grey),
-                        )
-                      else
-                        Text(
-                          'IMEI: ${vehicle.imei}',
-                          style: const TextStyle(color: Colors.grey),
-                        ),
                     ],
                   ),
                 ),

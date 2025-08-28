@@ -49,7 +49,7 @@ class MapController {
       _markers.clear();
       _markers.addAll(await _loadMarkers.execute());
     } catch (e) {
-      print('Erro ao carregar marcadores: $e');
+      throw Exception('Erro ao carregar marcadores: $e');
     }
   }
 

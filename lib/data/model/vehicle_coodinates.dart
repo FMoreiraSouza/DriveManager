@@ -1,6 +1,6 @@
 ﻿class VehicleCoordinates {
   final int? id;
-  final int? imei; // Alterado para int? para refletir bigint null
+  final int? imei;
   final double latitude;
   final double longitude;
   final double speed;
@@ -9,7 +9,7 @@
 
   VehicleCoordinates({
     this.id,
-    this.imei, // Agora aceita null
+    this.imei,
     required this.latitude,
     required this.longitude,
     required this.speed,
@@ -20,7 +20,7 @@
   factory VehicleCoordinates.fromMap(Map<String, dynamic> map) {
     return VehicleCoordinates(
       id: map['id'] as int?,
-      imei: map['imei'] as int?, // Aceita int ou null diretamente
+      imei: map['imei'] as int?,
       latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
       longitude: (map['longitude'] as num?)?.toDouble() ?? 0.0,
       speed: (map['speed'] as num?)?.toDouble() ?? 0.0,
@@ -33,7 +33,7 @@
   Map<String, dynamic> toMap() {
     return {
       if (id != null) 'id': id,
-      if (imei != null) 'imei': imei, // Lida com null
+      if (imei != null) 'imei': imei,
       'latitude': latitude,
       'longitude': longitude,
       'speed': speed,
@@ -44,7 +44,7 @@
 
   VehicleCoordinates copyWith({
     int? id,
-    int? imei, // Alterado para int?
+    int? imei,
     double? latitude,
     double? longitude,
     double? speed,
