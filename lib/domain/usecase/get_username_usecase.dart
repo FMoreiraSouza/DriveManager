@@ -1,9 +1,9 @@
 ﻿import 'package:drivemanager/data/repository/contract/user_repository.dart';
 
-class GetUserName {
+class GetUserNameUsecase {
   final UserRepository _userRepository;
 
-  GetUserName(this._userRepository);
+  GetUserNameUsecase(this._userRepository);
 
   String execute() {
     return _userRepository.getUserName();

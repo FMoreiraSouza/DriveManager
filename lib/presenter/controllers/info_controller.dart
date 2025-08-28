@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/repository/contract/user_repository.dart';
-import 'package:drivemanager/domain/usecase/get_username.dart';
+import 'package:drivemanager/domain/usecase/get_username_usecase.dart';
 
 class InfoController {
-  final GetUserName _getUserName;
+  final GetUserNameUsecase _getUserName;
 
-  InfoController(UserRepository userRepository) : _getUserName = GetUserName(userRepository);
+  InfoController(UserRepository userRepository) : _getUserName = GetUserNameUsecase(userRepository);
 
   String getUserName() {
     return _getUserName.execute();

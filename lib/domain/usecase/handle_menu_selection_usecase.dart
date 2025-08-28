@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/repository/contract/auth_repository.dart';
 import 'package:drivemanager/routes/navigation_service.dart';
 
-class HandleMenuSelection {
+class HandleMenuSelectionUsecase {
   final AuthRepository _authRepository;
 
-  HandleMenuSelection(this._authRepository);
+  HandleMenuSelectionUsecase(this._authRepository);
 
   Future<void> execute(String selection) async {
     switch (selection) {

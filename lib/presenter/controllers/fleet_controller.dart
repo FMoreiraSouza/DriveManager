@@ -2,17 +2,17 @@
 import 'package:drivemanager/data/model/vehicle_coodinates.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
-import 'package:drivemanager/domain/usecase/fetch_coordinates_list.dart';
+import 'package:drivemanager/domain/usecase/fetch_coordinates_list_usecase.dart';
 import 'package:drivemanager/domain/usecase/fetch_fleet_list_usecase.dart';
-import 'package:drivemanager/domain/usecase/subscribe_to_coordinate_updates.dart';
-import 'package:drivemanager/domain/usecase/subscribe_to_fleet_updates.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_coordinate_updates_usecase.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_fleet_updates_usecase.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FleetController {
-  final FetchFleetList _fetchFleetList;
-  final FetchCoordinatesList _fetchCoordinatesList;
-  final SubscribeToFleetUpdates _subscribeToFleetUpdates;
-  final SubscribeToCoordinatesUpdates _subscribeToCoordinatesUpdates;
+  final FetchFleetListUsecase _fetchFleetList;
+  final FetchCoordinatesListUsecase _fetchCoordinatesList;
+  final SubscribeToFleetUpdatesUsecase _subscribeToFleetUpdates;
+  final SubscribeToCoordinatesUpdatesUsecase _subscribeToCoordinatesUpdates;
   final void Function() onFleetUpdated;
   final void Function() onCoordinatesUpdated;
 
@@ -28,10 +28,11 @@ class FleetController {
     required VehicleCoordinatesRepository coordinatesRepository,
     required this.onFleetUpdated,
     required this.onCoordinatesUpdated,
-  })  : _fetchFleetList = FetchFleetList(vehicleRepository),
-        _fetchCoordinatesList = FetchCoordinatesList(coordinatesRepository),
-        _subscribeToFleetUpdates = SubscribeToFleetUpdates(vehicleRepository),
-        _subscribeToCoordinatesUpdates = SubscribeToCoordinatesUpdates(coordinatesRepository);
+  })  : _fetchFleetList = FetchFleetListUsecase(vehicleRepository),
+        _fetchCoordinatesList = FetchCoordinatesListUsecase(coordinatesRepository),
+        _subscribeToFleetUpdates = SubscribeToFleetUpdatesUsecase(vehicleRepository),
+        _subscribeToCoordinatesUpdates =
+            SubscribeToCoordinatesUpdatesUsecase(coordinatesRepository);
 
   Future<void> fetchFleetList() async {
     isLoading = true;

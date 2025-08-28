@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SubscribeToFleetUpdates {
+class SubscribeToFleetUpdatesUsecase {
   final VehicleRepository _vehicleRepository;
 
-  SubscribeToFleetUpdates(this._vehicleRepository);
+  SubscribeToFleetUpdatesUsecase(this._vehicleRepository);
 
   RealtimeChannel execute(void Function() onUpdate) {
     return Supabase.instance.client

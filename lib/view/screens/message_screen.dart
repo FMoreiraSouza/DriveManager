@@ -2,6 +2,7 @@
 import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
 import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
 import 'package:drivemanager/presenter/controllers/message_controller.dart';
+import 'package:drivemanager/view/widgets/message_item_widget.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -33,7 +34,6 @@ class _MessageScreenState extends State<MessageScreen> {
   Future<void> _handleRequestSupport(String plateNumber) async {
     try {
       final success = await messageController.requestSupport(plateNumber);
-
       if (success && mounted) {
         _showDialog(
           'Solicitação de Suporte para $plateNumber',
@@ -54,12 +54,7 @@ class _MessageScreenState extends State<MessageScreen> {
     }
   }
 
-  void _showDialog(
-    String title,
-    String content,
-    IconData icon,
-    Color color,
-  ) {
+  void _showDialog(String title, String content, IconData icon, Color color) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -74,9 +69,7 @@ class _MessageScreenState extends State<MessageScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Ok'),
             ),
           ],
@@ -92,33 +85,14 @@ class _MessageScreenState extends State<MessageScreen> {
         title: const Text('Mensagens'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: ListView(
         children: widget.messages.map((message) {
-          return ListTile(
-            leading: const Icon(
-              Icons.settings,
-              size: 40.0,
-              color: Colors.green,
-            ),
-            title: Text(
-              message.plateNumber ?? 'Sem placa',
-            ),
-            subtitle: Text(
-              message.message,
-            ),
-            trailing: TextButton(
-              onPressed: () {
-                if (message.plateNumber != null) {
-                  _handleRequestSupport(message.plateNumber!);
-                }
-              },
-              child: const Text('Solicitar Suporte'),
-            ),
+          return MessageItemWidget(
+            message: message,
+            onRequestSupport: _handleRequestSupport,
           );
         }).toList(),
       ),

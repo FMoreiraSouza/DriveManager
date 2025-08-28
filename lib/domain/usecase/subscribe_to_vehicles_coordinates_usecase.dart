@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SubscribeToVehicleCoordinates {
+class SubscribeToVehicleCoordinatesUsecase {
   final SupabaseClient _supabase;
 
-  SubscribeToVehicleCoordinates(this._supabase);
+  SubscribeToVehicleCoordinatesUsecase(this._supabase);
 
   RealtimeChannel execute(void Function(VehicleCoordinates) onUpdate) {
     return _supabase

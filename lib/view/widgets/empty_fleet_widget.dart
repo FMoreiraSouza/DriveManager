@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 
-class EmptyFleet extends StatelessWidget {
-  const EmptyFleet({super.key, required this.onClick});
+class EmptyFleetWidget extends StatelessWidget {
+  const EmptyFleetWidget({super.key, required this.onClick});
 
   final VoidCallback onClick;
 

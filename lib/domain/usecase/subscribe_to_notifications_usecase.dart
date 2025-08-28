@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/repository/contract/notification_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SubscribeToNotifications {
+class SubscribeToNotificationsUsecase {
   final NotificationRepository _notificationRepository;
 
-  SubscribeToNotifications(this._notificationRepository);
+  SubscribeToNotificationsUsecase(this._notificationRepository);
 
   RealtimeChannel execute(void Function(String) onMessageReceived) {
     return Supabase.instance.client

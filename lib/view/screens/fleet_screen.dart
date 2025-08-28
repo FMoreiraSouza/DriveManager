@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
 import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
-import 'package:drivemanager/view/widgets/empty_fleet.dart';
-import 'package:drivemanager/view/widgets/fleet_list.dart';
+import 'package:drivemanager/view/widgets/empty_fleet_widget.dart';
+import 'package:drivemanager/view/widgets/fleet_list_widget.dart';
 
 class FleetScreen extends StatefulWidget {
   const FleetScreen({super.key});
@@ -59,7 +59,7 @@ class _FleetScreenState extends State<FleetScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: _controller.fleetList.isEmpty && !_controller.isLoading
-                ? EmptyFleet(onClick: _openFleetRegisterScreen)
+                ? EmptyFleetWidget(onClick: _openFleetRegisterScreen)
                 : FleetList(
                     onButtonClick: _openFleetRegisterScreen,
                     fleetList: _controller.fleetList,

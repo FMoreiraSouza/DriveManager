@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
-import 'package:drivemanager/domain/usecase/register_vehicle.dart';
+import 'package:drivemanager/domain/usecase/register_vehicle_usecase.dart';
 import 'package:drivemanager/routes/navigation_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FleetRegisterController {
-  final RegisterVehicle _registerVehicle;
+  final RegisterVehicleUsecase _registerVehicle;
   String _plate = '';
   String _brand = '';
   String _model = '';
@@ -12,7 +12,7 @@ class FleetRegisterController {
   String _trackerImei = '';
 
   FleetRegisterController(SupabaseClient supabase)
-      : _registerVehicle = RegisterVehicle(VehicleRepositoryImpl(supabase));
+      : _registerVehicle = RegisterVehicleUsecase(VehicleRepositoryImpl(supabase));
 
   void setPlate(String value) => _plate = value;
   void setBrand(String value) => _brand = value;

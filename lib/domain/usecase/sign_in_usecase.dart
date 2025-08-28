@@ -1,11 +1,11 @@
 ﻿import 'package:drivemanager/data/repository/contract/auth_repository.dart';
 import 'package:drivemanager/data/repository/contract/user_repository.dart';
 
-class SignIn {
+class SignInUsecase {
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
 
-  SignIn(this._authRepository, this._userRepository);
+  SignInUsecase(this._authRepository, this._userRepository);
 
   Future<void> execute({required String email, required String password}) async {
     await _authRepository.signIn(email: email, password: password);

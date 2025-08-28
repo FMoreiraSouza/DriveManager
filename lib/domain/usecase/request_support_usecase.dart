@@ -1,11 +1,11 @@
 ﻿import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 
-class RequestSupport {
+class RequestSupportUsecase {
   final VehicleRepository _vehicleRepository;
   final VehicleCoordinatesRepository _vehicleCoordinatesRepository;
 
-  RequestSupport(this._vehicleRepository, this._vehicleCoordinatesRepository);
+  RequestSupportUsecase(this._vehicleRepository, this._vehicleCoordinatesRepository);
 
   Future<bool> execute(String plateNumber) async {
     try {

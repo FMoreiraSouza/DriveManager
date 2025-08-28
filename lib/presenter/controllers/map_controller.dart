@@ -1,7 +1,7 @@
 ﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
-import 'package:drivemanager/domain/usecase/load_markers.dart';
-import 'package:drivemanager/domain/usecase/subscribe_to_vehicles_coordinates.dart';
+import 'package:drivemanager/domain/usecase/load_markers_usecase.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_vehicles_coordinates_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,15 +13,15 @@ class MapController {
 
   final LatLng _initialPosition = const LatLng(-5.1619, -38.1190);
   final Set<Marker> _markers = {};
-  final LoadMarkers _loadMarkers;
-  final SubscribeToVehicleCoordinates _subscribeToVehicleCoordinates;
+  final LoadMarkersUsecase _loadMarkers;
+  final SubscribeToVehicleCoordinatesUsecase _subscribeToVehicleCoordinates;
   late final RealtimeChannel _vehicleCoordinatesChannel;
 
   MapController({
     required VehicleCoordinatesRepository vehicleCoordinatesRepository,
     required SupabaseClient supabase,
-  })  : _loadMarkers = LoadMarkers(vehicleCoordinatesRepository),
-        _subscribeToVehicleCoordinates = SubscribeToVehicleCoordinates(supabase);
+  })  : _loadMarkers = LoadMarkersUsecase(vehicleCoordinatesRepository),
+        _subscribeToVehicleCoordinates = SubscribeToVehicleCoordinatesUsecase(supabase);
 
   Future<void> initializeSupabase() async {
     await _subscribeToCoordinates();

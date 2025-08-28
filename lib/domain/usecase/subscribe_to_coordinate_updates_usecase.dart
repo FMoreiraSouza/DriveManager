@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class SubscribeToCoordinatesUpdates {
+class SubscribeToCoordinatesUpdatesUsecase {
   final VehicleCoordinatesRepository _vehicleCoordinatesRepository;
 
-  SubscribeToCoordinatesUpdates(this._vehicleCoordinatesRepository);
+  SubscribeToCoordinatesUpdatesUsecase(this._vehicleCoordinatesRepository);
 
   RealtimeChannel execute(void Function() onUpdate) {
     return Supabase.instance.client

@@ -1,10 +1,10 @@
 ﻿import 'package:drivemanager/data/model/vehicle.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 
-class RegisterVehicle {
+class RegisterVehicleUsecase {
   final VehicleRepository _vehicleRepository;
 
-  RegisterVehicle(this._vehicleRepository);
+  RegisterVehicleUsecase(this._vehicleRepository);
 
   Future<void> execute({
     required String plateNumber,
