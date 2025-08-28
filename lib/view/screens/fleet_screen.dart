@@ -1,8 +1,8 @@
 import 'package:drivemanager/presenter/controllers/fleet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/data/repository/vehicle_repository.dart';
-import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
 import 'package:drivemanager/view/widgets/empty_fleet.dart';
 import 'package:drivemanager/view/widgets/fleet_list.dart';
 

@@ -1,5 +1,5 @@
-import 'package:drivemanager/data/repository/auth_repository.dart';
-import 'package:drivemanager/data/repository/notification_repository.dart';
+import 'package:drivemanager/data/repository/auth_repository_impl.dart';
+import 'package:drivemanager/data/repository/notification_repository_impl.dart';
 import 'package:drivemanager/presenter/controllers/home_controller.dart';
 import 'package:drivemanager/view/screens/message_screen.dart';
 import 'package:drivemanager/core/themes/app_theme.dart';

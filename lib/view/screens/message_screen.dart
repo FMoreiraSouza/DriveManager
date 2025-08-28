@@ -1,6 +1,6 @@
 ﻿import 'package:drivemanager/data/model/notification.dart';
-import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
-import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
+import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
 import 'package:drivemanager/presenter/controllers/message_controller.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
