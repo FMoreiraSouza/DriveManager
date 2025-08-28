@@ -26,8 +26,12 @@ class _FleetScreenState extends State<FleetScreen> {
       onFleetUpdated: _updateFleetList,
       onCoordinatesUpdated: _updateCoordinatesList,
     );
-    _controller.fetchFleetList();
-    _controller.fetchCoordinatesList();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _controller.fetchFleetList();
+    await _controller.fetchCoordinatesList();
     _controller.subscribeToFleetUpdates();
     _controller.subscribeToCoordinatesUpdates();
   }
@@ -39,11 +43,15 @@ class _FleetScreenState extends State<FleetScreen> {
   }
 
   void _updateFleetList() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _updateCoordinatesList() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _openFleetRegisterScreen() async {
@@ -60,7 +68,7 @@ class _FleetScreenState extends State<FleetScreen> {
             padding: const EdgeInsets.all(16.0),
             child: _controller.fleetList.isEmpty && !_controller.isLoading
                 ? EmptyFleetWidget(onClick: _openFleetRegisterScreen)
-                : FleetList(
+                : FleetListWidget(
                     onButtonClick: _openFleetRegisterScreen,
                     fleetList: _controller.fleetList,
                     coordinatesList: _controller.coordinatesList,

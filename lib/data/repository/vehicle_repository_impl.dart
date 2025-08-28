@@ -1,6 +1,6 @@
-﻿import 'package:drivemanager/data/model/vehicle.dart';
+﻿import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:drivemanager/data/model/vehicle.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class VehicleRepositoryImpl implements VehicleRepository {
   final SupabaseClient _supabase;
@@ -35,7 +35,7 @@ class VehicleRepositoryImpl implements VehicleRepository {
   }
 
   @override
-  Future<void> insertVehicleCoordinate(int imei) async {
+  Future<void> insertVehicleCoordinate(String imei) async {
     try {
       await _supabase.from('vehicle_coordinates').insert({
         'imei': imei,
@@ -48,5 +48,20 @@ class VehicleRepositoryImpl implements VehicleRepository {
     } catch (e) {
       throw Exception('Erro ao criar registro de coordenadas: $e');
     }
+  }
+
+  @override
+  RealtimeChannel subscribeToUpdates(void Function() callback) {
+    return _supabase
+        .channel('public:vehicles')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'vehicles',
+          callback: (payload) {
+            callback();
+          },
+        )
+        .subscribe();
   }
 }

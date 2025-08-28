@@ -11,18 +11,16 @@ class LoadMarkersUsecase {
     final coordinates = await _vehicleCoordinatesRepository.fetchCoordinates();
     final markers = <Marker>{};
     for (var coord in coordinates) {
-      if (coord.imei != null) {
-        final imei = coord.imei.toString();
-        final icon = await _getMarkerIcon(imei);
-        markers.add(
-          Marker(
-            markerId: MarkerId(imei),
-            position: LatLng(coord.latitude, coord.longitude),
-            infoWindow: InfoWindow(title: imei),
-            icon: icon,
-          ),
-        );
-      }
+      final imei = coord.imei.toString();
+      final icon = await _getMarkerIcon(imei);
+      markers.add(
+        Marker(
+          markerId: MarkerId(imei),
+          position: LatLng(coord.latitude, coord.longitude),
+          infoWindow: InfoWindow(title: imei),
+          icon: icon,
+        ),
+      );
     }
     return markers;
   }

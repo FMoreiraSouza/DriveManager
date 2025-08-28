@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:drivemanager/data/model/vehicle.dart';
 import 'package:drivemanager/view/widgets/vehicle_card_widget.dart';
 
-class FleetList extends StatelessWidget {
-  const FleetList({
+class FleetListWidget extends StatelessWidget {
+  const FleetListWidget({
     super.key,
     this.onButtonClick,
     required this.fleetList,
@@ -16,8 +16,7 @@ class FleetList extends StatelessWidget {
   final List<Vehicle> fleetList;
   final List<VehicleCoordinates> coordinatesList;
 
-  VehicleCoordinates? _findCoordinatesByImei(int? imei) {
-    if (imei == null) return null;
+  VehicleCoordinates? _findCoordinatesByImei(String imei) {
     try {
       return coordinatesList.firstWhere((coord) => coord.imei == imei);
     } catch (e) {

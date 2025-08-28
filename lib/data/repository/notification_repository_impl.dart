@@ -18,4 +18,22 @@ class NotificationRepositoryImpl implements NotificationRepository {
       throw Exception('Erro ao buscar notificações: $e');
     }
   }
+
+  @override
+  Future<void> deleteNotificationsByPlateNumber(String plateNumber) async {
+    try {
+      await _supabase.from('notifications').delete().eq('plate_number', plateNumber);
+    } catch (e) {
+      throw Exception('Erro ao excluir notificações: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteNotificationById(String id) async {
+    try {
+      await _supabase.from('notifications').delete().eq('id', id);
+    } catch (e) {
+      throw Exception('Erro ao excluir notificação: $e');
+    }
+  }
 }

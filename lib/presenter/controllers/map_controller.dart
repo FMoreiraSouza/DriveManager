@@ -54,20 +54,18 @@ class MapController {
   }
 
   Future<void> _updateMarkerPosition(VehicleCoordinates coord) async {
-    if (coord.imei != null) {
-      final imei = coord.imei.toString();
-      final icon = await _getMarkerIcon(imei);
+    final imei = coord.imei.toString();
+    final icon = await _getMarkerIcon(imei);
 
-      _markers.removeWhere((marker) => marker.markerId.value == imei);
-      _markers.add(
-        Marker(
-          markerId: MarkerId(imei),
-          position: LatLng(coord.latitude, coord.longitude),
-          infoWindow: InfoWindow(title: imei),
-          icon: icon,
-        ),
-      );
-    }
+    _markers.removeWhere((marker) => marker.markerId.value == imei);
+    _markers.add(
+      Marker(
+        markerId: MarkerId(imei),
+        position: LatLng(coord.latitude, coord.longitude),
+        infoWindow: InfoWindow(title: imei),
+        icon: icon,
+      ),
+    );
   }
 
   Future<BitmapDescriptor> _getMarkerIcon(String imei) async {

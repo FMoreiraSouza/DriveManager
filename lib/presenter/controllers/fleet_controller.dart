@@ -1,4 +1,5 @@
-﻿import 'package:drivemanager/data/model/vehicle.dart';
+﻿import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:drivemanager/data/model/vehicle.dart';
 import 'package:drivemanager/data/model/vehicle_coodinates.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
@@ -6,7 +7,6 @@ import 'package:drivemanager/domain/usecase/fetch_coordinates_list_usecase.dart'
 import 'package:drivemanager/domain/usecase/fetch_fleet_list_usecase.dart';
 import 'package:drivemanager/domain/usecase/subscribe_to_coordinate_updates_usecase.dart';
 import 'package:drivemanager/domain/usecase/subscribe_to_fleet_updates_usecase.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FleetController {
   final FetchFleetListUsecase _fetchFleetList;
@@ -56,11 +56,15 @@ class FleetController {
   }
 
   void subscribeToFleetUpdates() {
-    vehicleSubscription = _subscribeToFleetUpdates.execute(onFleetUpdated);
+    vehicleSubscription = _subscribeToFleetUpdates.execute(() {
+      fetchFleetList();
+    });
   }
 
   void subscribeToCoordinatesUpdates() {
-    coordinatesSubscription = _subscribeToCoordinatesUpdates.execute(onCoordinatesUpdated);
+    coordinatesSubscription = _subscribeToCoordinatesUpdates.execute(() {
+      fetchCoordinatesList();
+    });
   }
 
   void dispose() {

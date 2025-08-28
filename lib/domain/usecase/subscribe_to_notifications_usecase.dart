@@ -14,8 +14,14 @@ class SubscribeToNotificationsUsecase {
           schema: 'public',
           table: 'notifications',
           callback: (payload) {
-            final message = payload.newRecord['message'] as String;
-            onMessageReceived(message);
+            // CORREÇÃO: Use operador null-aware e forneça valor padrão
+            final message = payload.newRecord['message']?.toString() ?? '';
+
+            // Só chama se a mensagem não for vazia
+            if (message.isNotEmpty) {
+              onMessageReceived(message);
+            }
+
             _notificationRepository.fetchNotifications();
           },
         )

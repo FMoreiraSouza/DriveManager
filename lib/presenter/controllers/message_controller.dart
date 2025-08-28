@@ -1,5 +1,6 @@
 ﻿import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/contract/notification_repository.dart';
 import 'package:drivemanager/domain/usecase/request_support_usecase.dart';
 
 class MessageController {
@@ -8,7 +9,12 @@ class MessageController {
   MessageController({
     required VehicleRepository vehicleRepository,
     required VehicleCoordinatesRepository vehicleCoordinatesRepository,
-  }) : _requestSupport = RequestSupportUsecase(vehicleRepository, vehicleCoordinatesRepository);
+    required NotificationRepository notificationRepository,
+  }) : _requestSupport = RequestSupportUsecase(
+          vehicleRepository,
+          vehicleCoordinatesRepository,
+          notificationRepository,
+        );
 
   Future<bool> requestSupport(String plateNumber) async {
     try {

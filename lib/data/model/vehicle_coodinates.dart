@@ -1,6 +1,5 @@
 ﻿class VehicleCoordinates {
-  final int? id;
-  final int? imei;
+  final String imei;
   final double latitude;
   final double longitude;
   final double speed;
@@ -8,8 +7,7 @@
   final DateTime timestamp;
 
   VehicleCoordinates({
-    this.id,
-    this.imei,
+    required this.imei,
     required this.latitude,
     required this.longitude,
     required this.speed,
@@ -19,21 +17,18 @@
 
   factory VehicleCoordinates.fromMap(Map<String, dynamic> map) {
     return VehicleCoordinates(
-      id: map['id'] as int?,
-      imei: map['imei'] as int?,
-      latitude: (map['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (map['longitude'] as num?)?.toDouble() ?? 0.0,
-      speed: (map['speed'] as num?)?.toDouble() ?? 0.0,
-      isStopped: map['isStopped'] as bool? ?? true,
-      timestamp:
-          map['timestamp'] != null ? DateTime.parse(map['timestamp'] as String) : DateTime.now(),
+      imei: map['imei'].toString(),
+      latitude: (map['latitude'] as num).toDouble(),
+      longitude: (map['longitude'] as num).toDouble(),
+      speed: (map['speed'] as num).toDouble(),
+      isStopped: map['isStopped'] as bool,
+      timestamp: DateTime.parse(map['timestamp'] as String),
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      if (id != null) 'id': id,
-      if (imei != null) 'imei': imei,
+      'imei': imei,
       'latitude': latitude,
       'longitude': longitude,
       'speed': speed,
@@ -42,28 +37,8 @@
     };
   }
 
-  VehicleCoordinates copyWith({
-    int? id,
-    int? imei,
-    double? latitude,
-    double? longitude,
-    double? speed,
-    bool? isStopped,
-    DateTime? timestamp,
-  }) {
-    return VehicleCoordinates(
-      id: id ?? this.id,
-      imei: imei ?? this.imei,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      speed: speed ?? this.speed,
-      isStopped: isStopped ?? this.isStopped,
-      timestamp: timestamp ?? this.timestamp,
-    );
-  }
-
   @override
   String toString() {
-    return 'VehicleCoordinates(id: $id, imei: $imei, latitude: $latitude, longitude: $longitude, speed: $speed, isStopped: $isStopped, timestamp: $timestamp)';
+    return 'VehicleCoordinates{imei: $imei, latitude: $latitude, longitude: $longitude, speed: $speed, isStopped: $isStopped, timestamp: $timestamp}';
   }
 }

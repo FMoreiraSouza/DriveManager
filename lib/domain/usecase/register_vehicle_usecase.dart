@@ -11,7 +11,7 @@ class RegisterVehicleUsecase {
     required String brand,
     required String model,
     required double mileage,
-    required int? imei,
+    required String imei, // Alterado para String
   }) async {
     final vehicle = Vehicle(
       id: 0,
@@ -19,12 +19,13 @@ class RegisterVehicleUsecase {
       brand: brand,
       model: model,
       mileage: mileage,
-      imei: imei,
+      imei: imei, // Agora é String
     );
 
     await _vehicleRepository.insertVehicle(vehicle);
 
-    if (imei != null) {
+    if (imei.isNotEmpty) {
+      // Verificar se não está vazio em vez de null
       await _vehicleRepository.insertVehicleCoordinate(imei);
     }
   }

@@ -1,6 +1,7 @@
 ﻿import 'package:drivemanager/data/model/notification.dart';
 import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
 import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
+import 'package:drivemanager/data/repository/notification_repository_impl.dart';
 import 'package:drivemanager/presenter/controllers/message_controller.dart';
 import 'package:drivemanager/view/widgets/message_item_widget.dart';
 import 'package:flutter/material.dart' hide Notification;
@@ -21,13 +22,16 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> {
   final supabaseClient = Supabase.instance.client;
   late final MessageController messageController;
+  late List<Notification> currentMessages;
 
   @override
   void initState() {
     super.initState();
+    currentMessages = widget.messages;
     messageController = MessageController(
       vehicleRepository: VehicleRepositoryImpl(supabaseClient),
       vehicleCoordinatesRepository: VehicleCoordinatesRepositoryImpl(supabaseClient),
+      notificationRepository: NotificationRepositoryImpl(supabaseClient),
     );
   }
 
@@ -35,9 +39,13 @@ class _MessageScreenState extends State<MessageScreen> {
     try {
       final success = await messageController.requestSupport(plateNumber);
       if (success && mounted) {
+        setState(() {
+          currentMessages.removeWhere((message) => message.plateNumber == plateNumber);
+        });
+
         _showDialog(
           'Solicitação de Suporte para $plateNumber',
-          'Suporte enviado com sucesso!',
+          'Suporte enviado com sucesso! Notificações removidas.',
           Icons.check,
           Colors.green,
         );
@@ -88,14 +96,18 @@ class _MessageScreenState extends State<MessageScreen> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: ListView(
-        children: widget.messages.map((message) {
-          return MessageItemWidget(
-            message: message,
-            onRequestSupport: _handleRequestSupport,
-          );
-        }).toList(),
-      ),
+      body: currentMessages.isEmpty
+          ? const Center(
+              child: Text('Nenhuma mensagem disponível'),
+            )
+          : ListView(
+              children: currentMessages.map((message) {
+                return MessageItemWidget(
+                  message: message,
+                  onRequestSupport: _handleRequestSupport,
+                );
+              }).toList(),
+            ),
     );
   }
 }
