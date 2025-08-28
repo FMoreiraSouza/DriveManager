@@ -1,7 +1,7 @@
 ﻿import 'package:drivemanager/data/model/vehicle.dart';
 import 'package:drivemanager/data/model/vehicle_coodinates.dart';
-import 'package:drivemanager/data/repository/vehicle_repository.dart';
-import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 import 'package:drivemanager/domain/usecase/fetch_coordinates_list.dart';
 import 'package:drivemanager/domain/usecase/fetch_fleet_list_usecase.dart';
 import 'package:drivemanager/domain/usecase/subscribe_to_coordinate_updates.dart';

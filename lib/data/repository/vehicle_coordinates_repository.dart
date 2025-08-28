@@ -1,10 +1,6 @@
 ﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-abstract class VehicleCoordinatesRepository {
-  Future<List<VehicleCoordinates>> fetchCoordinates();
-  Future<void> updateVehicleStatus(int imei, bool isStopped);
-}
 
 class VehicleCoordinatesRepositoryImpl implements VehicleCoordinatesRepository {
   final SupabaseClient _supabase;

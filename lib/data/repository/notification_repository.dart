@@ -1,9 +1,6 @@
 ﻿import 'package:drivemanager/data/model/notification.dart';
+import 'package:drivemanager/data/repository/contract/notification_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-abstract class NotificationRepository {
-  Future<List<Notification>> fetchNotifications();
-}
 
 class NotificationRepositoryImpl implements NotificationRepository {
   final SupabaseClient _supabase;

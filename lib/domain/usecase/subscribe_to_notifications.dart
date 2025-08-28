@@ -1,4 +1,4 @@
-﻿import 'package:drivemanager/data/repository/notification_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/notification_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SubscribeToNotifications {

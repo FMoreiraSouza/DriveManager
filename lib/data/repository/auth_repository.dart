@@ -1,10 +1,5 @@
-﻿import 'package:supabase_flutter/supabase_flutter.dart';
-
-abstract class AuthRepository {
-  Future<void> signIn({required String email, required String password});
-  Future<void> signOut();
-  Future<bool> isAuthenticated();
-}
+﻿import 'package:drivemanager/data/repository/contract/auth_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final SupabaseClient _supabase;

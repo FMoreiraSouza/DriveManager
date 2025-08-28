@@ -1,10 +1,6 @@
 ﻿import 'package:drivemanager/data/model/vehicle.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-abstract class VehicleRepository {
-  Future<List<Vehicle>> fetchVehicles();
-  Future<void> insertVehicle(Vehicle vehicle);
-}
 
 class VehicleRepositoryImpl implements VehicleRepository {
   final SupabaseClient _supabase;

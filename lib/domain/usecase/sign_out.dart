@@ -1,4 +1,4 @@
-﻿import 'package:drivemanager/data/repository/auth_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/auth_repository.dart';
 
 class SignOut {
   final AuthRepository _authRepository;

@@ -1,4 +1,4 @@
-﻿import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SubscribeToCoordinatesUpdates {

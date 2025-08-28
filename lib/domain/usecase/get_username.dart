@@ -1,4 +1,4 @@
-﻿import 'package:drivemanager/data/repository/user_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/user_repository.dart';
 
 class GetUserName {
   final UserRepository _userRepository;

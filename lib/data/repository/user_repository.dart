@@ -1,9 +1,5 @@
-﻿import 'package:get_storage/get_storage.dart';
-
-abstract class UserRepository {
-  String getUserName();
-  Future<void> saveUserName(String userName);
-}
+﻿import 'package:drivemanager/data/repository/contract/user_repository.dart';
+import 'package:get_storage/get_storage.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final GetStorage _box;

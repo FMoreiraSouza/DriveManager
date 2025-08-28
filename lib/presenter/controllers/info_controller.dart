@@ -1,4 +1,4 @@
-﻿import 'package:drivemanager/data/repository/user_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/user_repository.dart';
 import 'package:drivemanager/domain/usecase/get_username.dart';
 
 class InfoController {

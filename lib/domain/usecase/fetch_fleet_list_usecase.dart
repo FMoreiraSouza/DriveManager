@@ -1,5 +1,5 @@
 ﻿import 'package:drivemanager/data/model/vehicle.dart';
-import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 
 class FetchFleetList {
   final VehicleRepository _vehicleRepository;

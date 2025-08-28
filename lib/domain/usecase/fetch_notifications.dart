@@ -1,5 +1,5 @@
 ﻿import 'package:drivemanager/data/model/notification.dart';
-import 'package:drivemanager/data/repository/notification_repository.dart';
+import 'package:drivemanager/data/repository/contract/notification_repository.dart';
 
 class FetchNotifications {
   final NotificationRepository _notificationRepository;

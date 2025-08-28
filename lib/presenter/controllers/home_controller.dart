@@ -1,12 +1,12 @@
-﻿import 'package:flutter/material.dart' hide Notification;
-import 'package:drivemanager/data/model/notification.dart';
-import 'package:drivemanager/data/repository/auth_repository.dart';
-import 'package:drivemanager/data/repository/notification_repository.dart';
+﻿import 'package:drivemanager/data/model/notification.dart';
+import 'package:drivemanager/data/repository/contract/auth_repository.dart';
+import 'package:drivemanager/data/repository/contract/notification_repository.dart';
 import 'package:drivemanager/domain/usecase/fetch_notifications.dart';
-import 'package:drivemanager/domain/usecase/subscribe_to_notifications.dart';
 import 'package:drivemanager/domain/usecase/handle_menu_selection.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_notifications.dart';
 import 'package:drivemanager/view/screens/fleet_screen.dart';
 import 'package:drivemanager/view/screens/map_screen.dart';
+import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeController {

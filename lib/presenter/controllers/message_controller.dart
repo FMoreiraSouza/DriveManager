@@ -1,5 +1,5 @@
-﻿import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
-import 'package:drivemanager/data/repository/vehicle_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
 import 'package:drivemanager/domain/usecase/request_support.dart';
 
 class MessageController {

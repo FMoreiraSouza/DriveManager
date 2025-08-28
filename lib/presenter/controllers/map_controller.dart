@@ -1,5 +1,5 @@
 ﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
-import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
 import 'package:drivemanager/domain/usecase/load_markers.dart';
 import 'package:drivemanager/domain/usecase/subscribe_to_vehicles_coordinates.dart';
 import 'package:flutter/material.dart';

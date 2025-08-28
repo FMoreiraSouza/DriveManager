@@ -1,5 +1,5 @@
-﻿import 'package:drivemanager/data/repository/auth_repository.dart';
-import 'package:drivemanager/data/repository/user_repository.dart';
+﻿import 'package:drivemanager/data/repository/contract/auth_repository.dart';
+import 'package:drivemanager/data/repository/contract/user_repository.dart';
 
 class SignIn {
   final AuthRepository _authRepository;
