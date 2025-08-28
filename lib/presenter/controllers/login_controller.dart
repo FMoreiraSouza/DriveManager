@@ -22,7 +22,6 @@ class LoginController {
         throw Exception('Falha no login: usuário não retornado');
       }
 
-      // O Supabase gerencia automaticamente a sessão persistida
       NavigationService.pushReplacementNamed('/home');
     } catch (e) {
       NavigationService.showSnackBar('Erro ao fazer login: $e');

@@ -33,4 +33,20 @@ class VehicleRepositoryImpl implements VehicleRepository {
       throw Exception('Erro ao salvar veículo: $e');
     }
   }
+
+  @override
+  Future<void> insertVehicleCoordinate(int imei) async {
+    try {
+      await _supabase.from('vehicle_coordinates').insert({
+        'imei': imei,
+        'latitude': 0.0,
+        'longitude': 0.0,
+        'isStopped': true,
+        'speed': 0.0,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      throw Exception('Erro ao criar registro de coordenadas: $e');
+    }
+  }
 }

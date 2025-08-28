@@ -21,6 +21,11 @@ class RegisterVehicleUsecase {
       mileage: mileage,
       imei: imei,
     );
+
     await _vehicleRepository.insertVehicle(vehicle);
+
+    if (imei != null) {
+      await _vehicleRepository.insertVehicleCoordinate(imei);
+    }
   }
 }

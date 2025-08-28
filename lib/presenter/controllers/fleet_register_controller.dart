@@ -38,6 +38,7 @@ class FleetRegisterController {
         imei: imei,
       );
 
+      NavigationService.showSnackBar('Veículo cadastrado com sucesso!');
       NavigationService.goBack(result: {
         'plate_number': _plate,
         'brand': _brand,
@@ -47,7 +48,7 @@ class FleetRegisterController {
       });
     } catch (e) {
       NavigationService.showSnackBar('Erro ao salvar veículo: $e');
-      rethrow; // Re-lança a exceção para que a screen saiba que houve erro
+      rethrow;
     }
   }
 }

@@ -16,7 +16,6 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
   late FleetRegisterController _controller;
   bool _isLoading = false;
 
-  // FocusNodes
   final FocusNode _plateFocusNode = FocusNode();
   final FocusNode _brandFocusNode = FocusNode();
   final FocusNode _modelFocusNode = FocusNode();

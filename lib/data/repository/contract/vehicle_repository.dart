@@ -3,4 +3,5 @@
 abstract class VehicleRepository {
   Future<List<Vehicle>> fetchVehicles();
   Future<void> insertVehicle(Vehicle vehicle);
+  Future<void> insertVehicleCoordinate(int imei);
 }
