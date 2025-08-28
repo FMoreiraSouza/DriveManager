@@ -1,8 +1,10 @@
 import 'package:drivemanager/presenter/controllers/fleet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/presenter/widgets/empty_fleet.dart';
-import 'package:drivemanager/presenter/widgets/fleet_list.dart';
+import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/view/widgets/empty_fleet.dart';
+import 'package:drivemanager/view/widgets/fleet_list.dart';
 
 class FleetScreen extends StatefulWidget {
   const FleetScreen({super.key});
@@ -19,7 +21,8 @@ class _FleetScreenState extends State<FleetScreen> {
     super.initState();
     final supabase = Supabase.instance.client;
     _controller = FleetController(
-      supabase: supabase,
+      vehicleRepository: VehicleRepositoryImpl(supabase),
+      coordinatesRepository: VehicleCoordinatesRepositoryImpl(supabase),
       onFleetUpdated: _updateFleetList,
       onCoordinatesUpdated: _updateCoordinatesList,
     );
@@ -44,7 +47,7 @@ class _FleetScreenState extends State<FleetScreen> {
   }
 
   void _openFleetRegisterScreen() async {
-    await Navigator.pushNamed(context, '/fleet-register');
+    await Navigator.pushNamed(context, '/fleet_register');
     _controller.fetchFleetList();
   }
 

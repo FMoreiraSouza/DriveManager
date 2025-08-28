@@ -1,34 +1,20 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/data/model/vehicle.dart';
+import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/domain/usecase/request_support.dart';
 
 class MessageController {
-  final SupabaseClient supabaseClient;
+  final RequestSupport _requestSupport;
 
-  MessageController(this.supabaseClient);
+  MessageController({
+    required VehicleRepository vehicleRepository,
+    required VehicleCoordinatesRepository vehicleCoordinatesRepository,
+  }) : _requestSupport = RequestSupport(vehicleRepository, vehicleCoordinatesRepository);
 
   Future<void> requestSupport(BuildContext context, String plateNumber) async {
     try {
-      final response =
-          await supabaseClient.from('vehicles').select().eq('plate_number', plateNumber).single();
-
-      final vehicle = Vehicle.fromMap(response);
-      if (vehicle.imei == null) {
-        _showDialog(
-          context,
-          'Erro',
-          'Veículo com placa $plateNumber não encontrado ou IMEI inválido.',
-          Icons.error,
-          Colors.red,
-        );
-        return;
-      }
-
-      final updateResponse = await supabaseClient
-          .from('vehicle_coordinates')
-          .update({'isStopped': false}).eq('imei', vehicle.imei!);
-
-      if (updateResponse == null) {
+      final success = await _requestSupport.execute(plateNumber);
+      if (success) {
         _showDialog(
           context,
           'Solicitação de Suporte para $plateNumber',
@@ -36,20 +22,12 @@ class MessageController {
           Icons.check,
           Colors.green,
         );
-      } else {
-        _showDialog(
-          context,
-          'Erro ao solicitar suporte para $plateNumber',
-          'Ocorreu um erro ao tentar enviar a solicitação de suporte.',
-          Icons.error,
-          Colors.red,
-        );
       }
     } catch (e) {
       _showDialog(
         context,
         'Erro',
-        'Ocorreu um erro inesperado: $e',
+        'Ocorreu um erro: $e',
         Icons.error,
         Colors.red,
       );

@@ -1,11 +1,12 @@
-﻿import 'package:get_storage/get_storage.dart';
+﻿import 'package:drivemanager/data/repository/user_repository.dart';
+import 'package:drivemanager/domain/usecase/get_username.dart';
 
 class InfoController {
-  final GetStorage _box;
+  final GetUserName _getUserName;
 
-  InfoController(this._box);
+  InfoController(UserRepository userRepository) : _getUserName = GetUserName(userRepository);
 
   String getUserName() {
-    return _box.read('user_name') ?? 'Usuário';
+    return _getUserName.execute();
   }
 }

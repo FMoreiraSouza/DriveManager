@@ -1,3 +1,4 @@
+import 'package:drivemanager/data/repository/vehicle_repository.dart';
 import 'package:drivemanager/presenter/controllers/fleet_register_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,8 +23,9 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
   void initState() {
     super.initState();
     final supabase = Supabase.instance.client;
+    final vehicleRepository = VehicleRepositoryImpl(supabase);
     _controller = FleetRegisterController(
-      supabase,
+      vehicleRepository,
       _plateController,
       _brandController,
       _modelController,
@@ -91,7 +93,7 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
               TextFormField(
                 controller: _trackerImeiController,
                 decoration: const InputDecoration(labelText: 'IMEI do Rastreador'),
-                keyboardType: TextInputType.number, // Restringe a números
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Informe o IMEI do rastreador';

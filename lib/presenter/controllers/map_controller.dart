@@ -1,4 +1,7 @@
 ﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/domain/usecase/load_markers.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_vehicles_coordinates.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,13 +13,19 @@ class MapController {
 
   final LatLng _initialPosition = const LatLng(-5.1619, -38.1190);
   final Set<Marker> _markers = {};
-  late final SupabaseClient _supabase;
+  final LoadMarkers _loadMarkers;
+  final SubscribeToVehicleCoordinates _subscribeToVehicleCoordinates;
   late final RealtimeChannel _vehicleCoordinatesChannel;
 
+  MapController({
+    required VehicleCoordinatesRepository vehicleCoordinatesRepository,
+    required SupabaseClient supabase,
+  })  : _loadMarkers = LoadMarkers(vehicleCoordinatesRepository),
+        _subscribeToVehicleCoordinates = SubscribeToVehicleCoordinates(supabase);
+
   Future<void> initializeSupabase() async {
-    _supabase = Supabase.instance.client;
-    await _subscribeToVehicleCoordinates();
-    await _loadMarkersFromDatabase();
+    await _subscribeToCoordinates();
+    await _fetchMarkers();
   }
 
   Future<void> loadMap(Function(bool) onMapLoaded, Function(bool) onErrorLoadingMap) async {
@@ -31,30 +40,14 @@ class MapController {
     }
   }
 
-  Future<void> _subscribeToVehicleCoordinates() async {
-    _vehicleCoordinatesChannel = _supabase
-        .channel('public:vehicle_coordinates')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'vehicle_coordinates',
-          callback: (payload) {
-            final record = payload.newRecord;
-            _updateMarkerPosition(VehicleCoordinates.fromMap(record));
-          },
-        )
-        .subscribe();
+  Future<void> _subscribeToCoordinates() async {
+    _vehicleCoordinatesChannel = _subscribeToVehicleCoordinates.execute(_updateMarkerPosition);
   }
 
-  Future<void> _loadMarkersFromDatabase() async {
+  Future<void> _fetchMarkers() async {
     try {
-      final response = await _supabase.from('vehicle_coordinates').select();
-      final data = response as List<dynamic>;
-
       _markers.clear();
-      for (var record in data) {
-        _updateMarkerPosition(VehicleCoordinates.fromMap(Map<String, dynamic>.from(record)));
-      }
+      _markers.addAll(await _loadMarkers.execute());
     } catch (e) {
       print('Erro ao carregar marcadores: $e');
     }

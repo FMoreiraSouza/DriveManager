@@ -1,9 +1,18 @@
 ﻿import 'package:drivemanager/data/model/vehicle.dart';
 import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/domain/usecase/fetch_coordinates_list.dart';
+import 'package:drivemanager/domain/usecase/fetch_fleet_list_usecase.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_coordinate_updates.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_fleet_updates.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class FleetController {
-  final SupabaseClient _supabase;
+  final FetchFleetList _fetchFleetList;
+  final FetchCoordinatesList _fetchCoordinatesList;
+  final SubscribeToFleetUpdates _subscribeToFleetUpdates;
+  final SubscribeToCoordinatesUpdates _subscribeToCoordinatesUpdates;
   final void Function() onFleetUpdated;
   final void Function() onCoordinatesUpdated;
 
@@ -15,18 +24,19 @@ class FleetController {
   late final RealtimeChannel coordinatesSubscription;
 
   FleetController({
-    required SupabaseClient supabase,
+    required VehicleRepository vehicleRepository,
+    required VehicleCoordinatesRepository coordinatesRepository,
     required this.onFleetUpdated,
     required this.onCoordinatesUpdated,
-  }) : _supabase = supabase;
+  })  : _fetchFleetList = FetchFleetList(vehicleRepository),
+        _fetchCoordinatesList = FetchCoordinatesList(coordinatesRepository),
+        _subscribeToFleetUpdates = SubscribeToFleetUpdates(vehicleRepository),
+        _subscribeToCoordinatesUpdates = SubscribeToCoordinatesUpdates(coordinatesRepository);
 
   Future<void> fetchFleetList() async {
     isLoading = true;
     try {
-      final response = await _supabase.from('vehicles').select();
-      fleetList = (response as List<dynamic>)
-          .map((item) => Vehicle.fromMap(Map<String, dynamic>.from(item)))
-          .toList();
+      fleetList = await _fetchFleetList.execute();
     } catch (e) {
       print('Erro ao buscar lista de veículos: $e');
       throw Exception('Erro ao buscar lista de veículos: $e');
@@ -38,10 +48,7 @@ class FleetController {
 
   Future<void> fetchCoordinatesList() async {
     try {
-      final response = await _supabase.from('vehicle_coordinates').select();
-      coordinatesList = (response as List<dynamic>)
-          .map((item) => VehicleCoordinates.fromMap(Map<String, dynamic>.from(item)))
-          .toList();
+      coordinatesList = await _fetchCoordinatesList.execute();
       onCoordinatesUpdated();
     } catch (e) {
       print('Erro ao buscar coordenadas: $e');
@@ -50,27 +57,11 @@ class FleetController {
   }
 
   void subscribeToFleetUpdates() {
-    vehicleSubscription = _supabase
-        .channel('public:vehicles')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'vehicles',
-          callback: (_) => fetchFleetList(),
-        )
-        .subscribe();
+    vehicleSubscription = _subscribeToFleetUpdates.execute(onFleetUpdated);
   }
 
   void subscribeToCoordinatesUpdates() {
-    coordinatesSubscription = _supabase
-        .channel('public:vehicle_coordinates')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'vehicle_coordinates',
-          callback: (_) => fetchCoordinatesList(),
-        )
-        .subscribe();
+    coordinatesSubscription = _subscribeToCoordinatesUpdates.execute(onCoordinatesUpdated);
   }
 
   void dispose() {

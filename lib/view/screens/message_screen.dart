@@ -1,20 +1,25 @@
-﻿import 'package:drivemanager/presenter/controllers/message_controller.dart';
+﻿import 'package:drivemanager/data/model/notification.dart';
+import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/presenter/controllers/message_controller.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/data/model/notification.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({
     super.key,
-    required this.messages, // Alterado para List<Notification>
+    required this.messages,
   });
 
   final List<Notification> messages;
 
   @override
   Widget build(BuildContext context) {
-    final SupabaseClient supabaseClient = Supabase.instance.client;
-    final MessageController messageController = MessageController(supabaseClient);
+    final supabaseClient = Supabase.instance.client;
+    final messageController = MessageController(
+      vehicleRepository: VehicleRepositoryImpl(supabaseClient),
+      vehicleCoordinatesRepository: VehicleCoordinatesRepositoryImpl(supabaseClient),
+    );
 
     return Scaffold(
       appBar: AppBar(

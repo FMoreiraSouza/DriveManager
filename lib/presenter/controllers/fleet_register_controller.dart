@@ -1,9 +1,10 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/presenter/routes/navigation_service.dart';
+import 'package:drivemanager/data/repository/vehicle_repository.dart';
+import 'package:drivemanager/domain/usecase/register_vehicle.dart';
+import 'package:drivemanager/routes/navigation_service.dart';
 
 class FleetRegisterController {
-  final SupabaseClient _supabase;
+  final RegisterVehicle _registerVehicle;
   final TextEditingController plateController;
   final TextEditingController brandController;
   final TextEditingController modelController;
@@ -11,13 +12,13 @@ class FleetRegisterController {
   final TextEditingController trackerImeiController;
 
   FleetRegisterController(
-    this._supabase,
+    VehicleRepository vehicleRepository,
     this.plateController,
     this.brandController,
     this.modelController,
     this.mileageController,
     this.trackerImeiController,
-  );
+  ) : _registerVehicle = RegisterVehicle(vehicleRepository);
 
   Future<void> saveVehicle() async {
     try {
@@ -29,21 +30,21 @@ class FleetRegisterController {
         return;
       }
 
-      final newVehicle = {
+      await _registerVehicle.execute(
+        plateNumber: plateController.text,
+        brand: brandController.text,
+        model: modelController.text,
+        mileage: mileage,
+        imei: imei,
+      );
+
+      NavigationService.goBack(result: {
         'plate_number': plateController.text,
         'brand': brandController.text,
         'model': modelController.text,
         'mileage': mileage,
         'imei': imei,
-      };
-
-      final response = await _supabase.from('vehicles').insert(newVehicle);
-
-      if (response.error == null) {
-        NavigationService.goBack(result: newVehicle);
-      } else {
-        NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error!.message}');
-      }
+      });
     } catch (e) {
       NavigationService.showSnackBar('Erro ao salvar veículo: $e');
     }

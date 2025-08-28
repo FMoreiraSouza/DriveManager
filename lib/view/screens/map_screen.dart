@@ -1,6 +1,8 @@
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
 import 'package:drivemanager/presenter/controllers/map_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -15,7 +17,11 @@ class MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _mapController = MapController();
+    final supabase = Supabase.instance.client;
+    _mapController = MapController(
+      vehicleCoordinatesRepository: VehicleCoordinatesRepositoryImpl(supabase),
+      supabase: supabase,
+    );
     _mapController.initializeSupabase();
     _mapController.loadMap(
       (mapLoaded) => setState(() {}),

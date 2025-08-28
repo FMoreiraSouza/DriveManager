@@ -1,14 +1,18 @@
-﻿import 'package:drivemanager/data/model/notification.dart';
-import 'package:drivemanager/presenter/controllers/login_controller.dart';
-import 'package:drivemanager/presenter/routes/navigation_service.dart';
-import 'package:drivemanager/presenter/screens/fleet_screen.dart';
-import 'package:drivemanager/presenter/screens/map_screen.dart';
-import 'package:flutter/material.dart' hide Notification;
+﻿import 'package:flutter/material.dart' hide Notification;
+import 'package:drivemanager/data/model/notification.dart';
+import 'package:drivemanager/data/repository/auth_repository.dart';
+import 'package:drivemanager/data/repository/notification_repository.dart';
+import 'package:drivemanager/domain/usecase/fetch_notifications.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_notifications.dart';
+import 'package:drivemanager/domain/usecase/handle_menu_selection.dart';
+import 'package:drivemanager/view/screens/fleet_screen.dart';
+import 'package:drivemanager/view/screens/map_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeController {
-  final SupabaseClient _supabase = Supabase.instance.client;
-  final LoginController loginController;
+  final FetchNotifications _fetchNotifications;
+  final SubscribeToNotifications _subscribeToNotifications;
+  final HandleMenuSelection _handleMenuSelection;
   final Function(bool) onLogoutStatusChanged;
 
   bool isLoggingOut = false;
@@ -21,14 +25,17 @@ class HomeController {
     const MapScreen(),
   ];
 
-  HomeController(this.loginController, this.onLogoutStatusChanged);
+  HomeController({
+    required NotificationRepository notificationRepository,
+    required AuthRepository authRepository,
+    required this.onLogoutStatusChanged,
+  })  : _fetchNotifications = FetchNotifications(notificationRepository),
+        _subscribeToNotifications = SubscribeToNotifications(notificationRepository),
+        _handleMenuSelection = HandleMenuSelection(authRepository);
 
   Future<void> fetchMessages() async {
     try {
-      final response = await _supabase.from('notifications').select();
-      messages = (response as List<dynamic>)
-          .map((item) => Notification.fromMap(Map<String, dynamic>.from(item)))
-          .toList();
+      messages = await _fetchNotifications.execute();
     } catch (e) {
       print('Erro ao buscar mensagens: $e');
       throw Exception('Erro ao buscar mensagens: $e');
@@ -36,19 +43,7 @@ class HomeController {
   }
 
   Future<void> subscribeNotifications(Function(String) onMessageReceived) async {
-    _notificationChannel = _supabase
-        .channel('public:notifications')
-        .onPostgresChanges(
-          event: PostgresChangeEvent.all,
-          schema: 'public',
-          table: 'notifications',
-          callback: (payload) {
-            final message = payload.newRecord['message'] as String;
-            onMessageReceived(message);
-            fetchMessages();
-          },
-        )
-        .subscribe();
+    _notificationChannel = _subscribeToNotifications.execute(onMessageReceived);
   }
 
   void unsubscribeNotifications() {
@@ -56,18 +51,15 @@ class HomeController {
   }
 
   Future<void> handleMenuSelection(String result) async {
-    switch (result) {
-      case 'info':
-        NavigationService.pushNamed('/info');
-        break;
-      case 'sair':
-        isLoggingOut = true;
-        onLogoutStatusChanged(isLoggingOut);
-        await loginController.signOut();
-        await Future.delayed(const Duration(seconds: 2));
-        isLoggingOut = false;
-        onLogoutStatusChanged(isLoggingOut);
-        break;
+    isLoggingOut = true;
+    onLogoutStatusChanged(isLoggingOut);
+    try {
+      await _handleMenuSelection.execute(result);
+    } catch (e) {
+      print('Erro ao processar seleção do menu: $e');
+    } finally {
+      isLoggingOut = false;
+      onLogoutStatusChanged(isLoggingOut);
     }
   }
 }

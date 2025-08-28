@@ -1,14 +1,14 @@
+import 'package:drivemanager/data/repository/auth_repository.dart';
+import 'package:drivemanager/data/repository/notification_repository.dart';
 import 'package:drivemanager/presenter/controllers/home_controller.dart';
-import 'package:drivemanager/presenter/controllers/login_controller.dart';
-import 'package:drivemanager/presenter/screens/message_screen.dart';
+import 'package:drivemanager/view/screens/message_screen.dart';
 import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/core/utils/load_panel.dart';
 import 'package:flutter/material.dart' hide Notification;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
-  final LoginController loginController;
-
-  const HomeScreen({super.key, required this.loginController});
+  const HomeScreen({super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -21,9 +21,11 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    final supabase = Supabase.instance.client;
     _homeController = HomeController(
-      widget.loginController,
-      (isLoggingOut) {
+      notificationRepository: NotificationRepositoryImpl(supabase),
+      authRepository: AuthRepositoryImpl(supabase),
+      onLogoutStatusChanged: (isLoggingOut) {
         if (mounted) {
           setState(() {
             _isLoggingOut = isLoggingOut;
@@ -101,7 +103,7 @@ class HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MessageScreen(
-                      messages: _homeController.messages, // Passa List<Notification> diretamente
+                      messages: _homeController.messages,
                     ),
                   ),
                 );
@@ -114,8 +116,13 @@ class HomeScreenState extends State<HomeScreen> {
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onSelected: (result) {
-              _homeController.handleMenuSelection(result);
+            onSelected: (result) async {
+              await _homeController.handleMenuSelection(result);
+              if (result == 'sair') {
+                if (mounted) {
+                  Navigator.pushReplacementNamed(context, '/login');
+                }
+              }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(

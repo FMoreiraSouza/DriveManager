@@ -1,7 +1,10 @@
+import 'package:drivemanager/data/repository/auth_repository.dart';
+import 'package:drivemanager/data/repository/user_repository.dart';
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
 import 'package:drivemanager/core/utils/load_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,7 +22,11 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _loginController = LoginController(Supabase.instance.client);
+    final supabase = Supabase.instance.client;
+    _loginController = LoginController(
+      authRepository: AuthRepositoryImpl(supabase),
+      userRepository: UserRepositoryImpl(GetStorage()),
+    );
   }
 
   Future<void> _handleSignIn() async {
@@ -27,16 +34,20 @@ class LoginScreenState extends State<LoginScreen> {
       _isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 1));
-
-    await _loginController.signIn(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
-
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      await _loginController.signIn(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao fazer login: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -101,5 +112,12 @@ class LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

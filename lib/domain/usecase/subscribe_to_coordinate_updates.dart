@@ -1,0 +1,20 @@
+﻿import 'package:drivemanager/data/repository/vehicle_coordinates_repository.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class SubscribeToCoordinatesUpdates {
+  final VehicleCoordinatesRepository _vehicleCoordinatesRepository;
+
+  SubscribeToCoordinatesUpdates(this._vehicleCoordinatesRepository);
+
+  RealtimeChannel execute(void Function() onUpdate) {
+    return Supabase.instance.client
+        .channel('public:vehicle_coordinates')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'vehicle_coordinates',
+          callback: (_) => _vehicleCoordinatesRepository.fetchCoordinates().then((_) => onUpdate()),
+        )
+        .subscribe();
+  }
+}
