@@ -1,33 +1,35 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:drivemanager/data/model/vehicle.dart';
 
 class MessageController {
   final SupabaseClient supabaseClient;
 
-  // Construtor que recebe o cliente Supabase
   MessageController(this.supabaseClient);
 
-  // Função para solicitar suporte com base no número da placa
   Future<void> requestSupport(BuildContext context, String plateNumber) async {
     try {
-      // Consulta para obter o IMEI do veículo
-      final response = await supabaseClient
-          .from('vehicles')
-          .select('imei')
-          .eq('plate_number', plateNumber)
-          .single();
+      final response =
+          await supabaseClient.from('vehicles').select().eq('plate_number', plateNumber).single();
 
-      final imei = response['imei'];
+      final vehicle = Vehicle.fromMap(response);
+      if (vehicle.imei == null) {
+        _showDialog(
+          context,
+          'Erro',
+          'Veículo com placa $plateNumber não encontrado ou IMEI inválido.',
+          Icons.error,
+          Colors.red,
+        );
+        return;
+      }
 
-      // Atualiza o status do veículo para "não parado"
       final updateResponse = await supabaseClient
           .from('vehicle_coordinates')
-          .update({'isStopped': false}).eq('imei', imei);
+          .update({'isStopped': false}).eq('imei', vehicle.imei!);
 
       if (updateResponse == null) {
-        // Exibe mensagem de sucesso
         _showDialog(
-          // ignore: use_build_context_synchronously
           context,
           'Solicitação de Suporte para $plateNumber',
           'Suporte enviado com sucesso!',
@@ -35,9 +37,7 @@ class MessageController {
           Colors.green,
         );
       } else {
-        // Exibe mensagem de erro
         _showDialog(
-          // ignore: use_build_context_synchronously
           context,
           'Erro ao solicitar suporte para $plateNumber',
           'Ocorreu um erro ao tentar enviar a solicitação de suporte.',
@@ -46,19 +46,16 @@ class MessageController {
         );
       }
     } catch (e) {
-      // Exibe mensagem de erro em caso de exceção
       _showDialog(
-        // ignore: use_build_context_synchronously
         context,
         'Erro',
-        'Ocorreu um erro inesperado.',
+        'Ocorreu um erro inesperado: $e',
         Icons.error,
         Colors.red,
       );
     }
   }
 
-  // Função privada para exibir um diálogo com mensagem
   void _showDialog(
     BuildContext context,
     String title,
@@ -81,7 +78,7 @@ class MessageController {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Fecha o diálogo
+                Navigator.of(context).pop();
               },
               child: const Text('Ok'),
             ),

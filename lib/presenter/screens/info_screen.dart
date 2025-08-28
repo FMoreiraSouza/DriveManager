@@ -7,12 +7,8 @@ class InfoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Cria uma instância do GetStorage.
     final box = GetStorage();
-    // Cria uma instância do InfoController.
     final infoController = InfoController(box);
-
-    // Obtém o nome do usuário usando o controller.
     final userName = infoController.getUserName();
 
     return Scaffold(

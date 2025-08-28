@@ -2,14 +2,11 @@ import 'package:get_storage/get_storage.dart';
 import 'package:drivemanager/presenter/routes/navigation_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Controlador para gerenciamento de login
 class LoginController {
-  final SupabaseClient _supabaseClient; // Cliente Supabase
+  final SupabaseClient _supabaseClient;
 
-  // Construtor que recebe o cliente Supabase
   LoginController(this._supabaseClient);
 
-  // Função para autenticar o usuário
   Future<void> signIn({
     required String email,
     required String password,
@@ -21,36 +18,29 @@ class LoginController {
       );
 
       if (response.session != null) {
-        // Extraia o nome do usuário até o símbolo '@'
         String userName = email.split('@')[0].toUpperCase();
-
-        // Salve o nome do usuário no GetStorage
         final box = GetStorage();
         box.write('user_name', userName);
-
-        NavigationService.pushReplacementNamed('/home'); // Navega para a tela inicial
+        NavigationService.pushReplacementNamed('/home');
       } else {
-        NavigationService.showSnackBar('Login falhou. Tente novamente.'); // Exibe mensagem de erro
+        NavigationService.showSnackBar('Login falhou. Tente novamente.');
       }
     } catch (e) {
-      NavigationService.showSnackBar(e.toString()); // Exibe mensagem de erro
+      NavigationService.showSnackBar(e.toString());
     }
   }
 
-  // Função para sair da conta
   Future<void> signOut() async {
     try {
       await _supabaseClient.auth.signOut();
-      NavigationService.pushReplacementNamed('/login'); // Navega de volta para a tela de login
+      NavigationService.pushReplacementNamed('/login');
     } catch (e) {
-      NavigationService.showSnackBar(
-          'Erro ao fazer logout. Tente novamente.'); // Exibe mensagem de erro
+      NavigationService.showSnackBar('Erro ao fazer logout. Tente novamente.');
     }
   }
 
-  // Verifica se o usuário está autenticado
   Future<bool> isAuthenticated() async {
     final session = _supabaseClient.auth.currentSession;
-    return session != null; // Retorna true se a sessão estiver ativa
+    return session != null;
   }
 }

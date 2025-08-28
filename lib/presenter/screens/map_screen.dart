@@ -15,11 +15,11 @@ class MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-    _mapController = MapController(); // Inicializa o controlador do mapa
-    _mapController.initializeSupabase(); // Inicializa o Supabase
+    _mapController = MapController();
+    _mapController.initializeSupabase();
     _mapController.loadMap(
-      (mapLoaded) => setState(() {}), // Atualiza o estado quando o mapa é carregado
-      (errorLoadingMap) => setState(() {}), // Atualiza o estado se houver erro ao carregar o mapa
+      (mapLoaded) => setState(() {}),
+      (errorLoadingMap) => setState(() {}),
     );
   }
 
@@ -31,13 +31,13 @@ class MapScreenState extends State<MapScreen> {
           if (_mapController.mapLoaded)
             GoogleMap(
               onMapCreated: (controller) {
-                _mapController.mapController = controller; // Define o controlador do mapa
+                _mapController.mapController = controller;
               },
               initialCameraPosition: CameraPosition(
                 target: _mapController.initialPosition,
                 zoom: 10,
               ),
-              markers: _mapController.markers, // Marca as localizações no mapa
+              markers: _mapController.markers,
             )
           else if (_mapController.errorLoadingMap)
             Center(
@@ -61,9 +61,7 @@ class MapScreenState extends State<MapScreen> {
               ),
             )
           else
-            const Center(
-                child:
-                    CircularProgressIndicator()), // Exibe indicador de progresso enquanto carrega o mapa
+            const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
@@ -71,7 +69,7 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
-    _mapController.dispose(); // Libera recursos quando a tela é descartada
+    _mapController.dispose();
     super.dispose();
   }
 }

@@ -1,29 +1,28 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MapController {
-  late GoogleMapController mapController; // Controlador do Google Map
-  bool _mapLoaded = false; // Indica se o mapa foi carregado
-  bool _errorLoadingMap = false; // Indica se houve um erro ao carregar o mapa
+  late GoogleMapController mapController;
+  bool _mapLoaded = false;
+  bool _errorLoadingMap = false;
 
-  final LatLng _initialPosition = const LatLng(-5.1619, -38.1190); // Posição inicial do mapa
-  final Set<Marker> _markers = {}; // Conjunto de marcadores no mapa
-  late final SupabaseClient _supabase; // Cliente Supabase
-  late final RealtimeChannel _vehicleCoordinatesChannel; // Canal para atualizações em tempo real
+  final LatLng _initialPosition = const LatLng(-5.1619, -38.1190);
+  final Set<Marker> _markers = {};
+  late final SupabaseClient _supabase;
+  late final RealtimeChannel _vehicleCoordinatesChannel;
 
-  // Inicializa o Supabase e configura os canais de dados
   Future<void> initializeSupabase() async {
     _supabase = Supabase.instance.client;
-    await _subscribeToVehicleCoordinates(); // Assina atualizações de coordenadas dos veículos
-    await _loadMarkersFromDatabase(); // Carrega os marcadores do banco de dados
+    await _subscribeToVehicleCoordinates();
+    await _loadMarkersFromDatabase();
   }
 
-  // Carrega o mapa e define o estado de carregamento
   Future<void> loadMap(Function(bool) onMapLoaded, Function(bool) onErrorLoadingMap) async {
     try {
       onErrorLoadingMap(false);
-      await Future.delayed(const Duration(seconds: 2)); // Simula o carregamento do mapa
+      await Future.delayed(const Duration(seconds: 2));
       _mapLoaded = true;
       onMapLoaded(true);
     } catch (e) {
@@ -32,7 +31,6 @@ class MapController {
     }
   }
 
-  // Assina o canal para receber atualizações das coordenadas dos veículos
   Future<void> _subscribeToVehicleCoordinates() async {
     _vehicleCoordinatesChannel = _supabase
         .channel('public:vehicle_coordinates')
@@ -42,52 +40,43 @@ class MapController {
           table: 'vehicle_coordinates',
           callback: (payload) {
             final record = payload.newRecord;
-            _updateMarkerPosition(record); // Atualiza a posição do marcador
+            _updateMarkerPosition(VehicleCoordinates.fromMap(record));
           },
         )
         .subscribe();
   }
 
-  // Carrega os marcadores do banco de dados
   Future<void> _loadMarkersFromDatabase() async {
-    final response = await _supabase.from('vehicle_coordinates').select();
-    final data = response as List<dynamic>;
+    try {
+      final response = await _supabase.from('vehicle_coordinates').select();
+      final data = response as List<dynamic>;
 
-    _markers.clear(); // Limpa os marcadores existentes
-    for (var record in data) {
-      if (record is Map<String, dynamic>) {
-        _updateMarkerPosition(record); // Atualiza a posição do marcador com os dados carregados
-      } else {
-        throw Exception('Formato de registro inesperado: $record');
+      _markers.clear();
+      for (var record in data) {
+        _updateMarkerPosition(VehicleCoordinates.fromMap(Map<String, dynamic>.from(record)));
       }
+    } catch (e) {
+      print('Erro ao carregar marcadores: $e');
     }
   }
 
-  // Atualiza a posição de um marcador com base nos dados fornecidos
-  Future<void> _updateMarkerPosition(Map<String, dynamic> record) async {
-    final imeiNumber = record['imei'] as int?;
-    final lat = record['latitude'] as double?;
-    final lng = record['longitude'] as double?;
+  Future<void> _updateMarkerPosition(VehicleCoordinates coord) async {
+    if (coord.imei != null) {
+      final imei = coord.imei.toString();
+      final icon = await _getMarkerIcon(imei);
 
-    if (imeiNumber != null && lat != null && lng != null) {
-      final imei = imeiNumber.toString();
-      final icon = await _getMarkerIcon(imei); // Obtém o ícone do marcador
-
-      _markers.removeWhere((marker) => marker.markerId.value == imei); // Remove marcador existente
+      _markers.removeWhere((marker) => marker.markerId.value == imei);
       _markers.add(
         Marker(
           markerId: MarkerId(imei),
-          position: LatLng(lat, lng),
+          position: LatLng(coord.latitude, coord.longitude),
           infoWindow: InfoWindow(title: imei),
           icon: icon,
         ),
       );
-    } else {
-      throw Exception('Formato de registro inesperado: $record');
     }
   }
 
-  // Obtém o ícone do marcador
   Future<BitmapDescriptor> _getMarkerIcon(String imei) async {
     const iconPath = 'assets/icons/marker.png';
     return BitmapDescriptor.asset(
@@ -96,12 +85,10 @@ class MapController {
     );
   }
 
-  // Desinscreve do canal ao finalizar
   void dispose() {
     _vehicleCoordinatesChannel.unsubscribe();
   }
 
-  // Propriedades
   Set<Marker> get markers => _markers;
   LatLng get initialPosition => _initialPosition;
   bool get mapLoaded => _mapLoaded;

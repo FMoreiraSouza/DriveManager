@@ -2,7 +2,6 @@ import 'package:drivemanager/presenter/controllers/fleet_register_controller.dar
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Tela para o registro de frota
 class FleetRegisterScreen extends StatefulWidget {
   const FleetRegisterScreen({super.key});
 
@@ -11,24 +10,18 @@ class FleetRegisterScreen extends StatefulWidget {
 }
 
 class FleetRegisterScreenState extends State<FleetRegisterScreen> {
-  // Chave global para o formulário
   final _formKey = GlobalKey<FormState>();
-
-  // Controladores para os campos de texto
   final TextEditingController _plateController = TextEditingController();
   final TextEditingController _brandController = TextEditingController();
   final TextEditingController _modelController = TextEditingController();
   final TextEditingController _mileageController = TextEditingController();
   final TextEditingController _trackerImeiController = TextEditingController();
-
   late FleetRegisterController _controller;
 
   @override
   void initState() {
     super.initState();
-    // Inicializa o cliente Supabase
     final supabase = Supabase.instance.client;
-    // Cria uma instância do controlador de registro de frota
     _controller = FleetRegisterController(
       supabase,
       _plateController,
@@ -51,7 +44,6 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
           key: _formKey,
           child: Column(
             children: [
-              // Campo para a placa do veículo
               TextFormField(
                 controller: _plateController,
                 decoration: const InputDecoration(labelText: 'Placa'),
@@ -62,7 +54,6 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para a marca do veículo
               TextFormField(
                 controller: _brandController,
                 decoration: const InputDecoration(labelText: 'Marca'),
@@ -73,7 +64,6 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para o modelo do veículo
               TextFormField(
                 controller: _modelController,
                 decoration: const InputDecoration(labelText: 'Modelo'),
@@ -84,7 +74,6 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   return null;
                 },
               ),
-              // Campo para a quilometragem do veículo
               TextFormField(
                 controller: _mileageController,
                 decoration: const InputDecoration(labelText: 'Quilometragem'),
@@ -93,22 +82,27 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
                   if (value == null || value.isEmpty) {
                     return 'Informe a quilometragem do veículo';
                   }
+                  if (double.tryParse(value.replaceAll(',', '.')) == null) {
+                    return 'Quilometragem deve ser um número válido';
+                  }
                   return null;
                 },
               ),
-              // Campo para o IMEI do rastreador
               TextFormField(
                 controller: _trackerImeiController,
                 decoration: const InputDecoration(labelText: 'IMEI do Rastreador'),
+                keyboardType: TextInputType.number, // Restringe a números
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Informe o IMEI do rastreador';
+                  }
+                  if (int.tryParse(value) == null) {
+                    return 'IMEI deve ser um número válido';
                   }
                   return null;
                 },
               ),
               const SizedBox(height: 16.0),
-              // Botão para salvar os dados do veículo
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
@@ -124,7 +118,17 @@ class FleetRegisterScreenState extends State<FleetRegisterScreen> {
           ),
         ),
       ),
-      resizeToAvoidBottomInset: true, // Evita que o teclado sobreponha o conteúdo
+      resizeToAvoidBottomInset: true,
     );
+  }
+
+  @override
+  void dispose() {
+    _plateController.dispose();
+    _brandController.dispose();
+    _modelController.dispose();
+    _mileageController.dispose();
+    _trackerImeiController.dispose();
+    super.dispose();
   }
 }

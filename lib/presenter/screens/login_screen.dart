@@ -3,7 +3,6 @@ import 'package:drivemanager/core/utils/load_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Tela de login do usuário
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -12,39 +11,37 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController(); // Controlador para o campo de email
-  final _passwordController = TextEditingController(); // Controlador para o campo de senha
-  late LoginController _loginController; // Controlador de login
-  bool _isLoading = false; // Indicador de carregamento
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  late LoginController _loginController;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loginController = LoginController(
-        Supabase.instance.client); // Inicializa o controlador com o cliente Supabase
+    _loginController = LoginController(Supabase.instance.client);
   }
 
-  // Função para lidar com o login
   Future<void> _handleSignIn() async {
     setState(() {
-      _isLoading = true; // Inicia o carregamento
+      _isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 1)); // Simula um atraso
+    await Future.delayed(const Duration(seconds: 1));
 
     await _loginController.signIn(
-      email: _emailController.text, // Email do usuário
-      password: _passwordController.text, // Senha do usuário
+      email: _emailController.text,
+      password: _passwordController.text,
     );
 
     setState(() {
-      _isLoading = false; // Finaliza o carregamento
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context); // Obtém o tema atual
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Stack(
@@ -58,36 +55,36 @@ class LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     width: 300.0,
                     height: 300.0,
-                    child: Image.asset('assets/images/drive_manager_logo.png'), // Logo da aplicação
+                    child: Image.asset('assets/images/drive_manager_logo.png'),
                   ),
                   const SizedBox(height: 32.0),
                   TextField(
-                    controller: _emailController, // Controlador do campo de email
+                    controller: _emailController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       border: const OutlineInputBorder(),
                       suffixIcon: Icon(
                         Icons.email,
-                        color: theme.primaryColor, // Cor do ícone do email
+                        color: theme.primaryColor,
                       ),
                     ),
                   ),
                   const SizedBox(height: 16.0),
                   TextField(
-                    controller: _passwordController, // Controlador do campo de senha
-                    obscureText: true, // Oculta o texto da senha
+                    controller: _passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Senha',
                       border: const OutlineInputBorder(),
                       suffixIcon: Icon(
                         Icons.lock,
-                        color: theme.primaryColor, // Cor do ícone da senha
+                        color: theme.primaryColor,
                       ),
                     ),
                   ),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
-                    onPressed: _handleSignIn, // Função de login
+                    onPressed: _handleSignIn,
                     child: const Text(
                       'Entrar',
                       style: TextStyle(color: Colors.white),

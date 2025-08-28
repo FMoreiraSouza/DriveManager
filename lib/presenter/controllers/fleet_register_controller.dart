@@ -4,8 +4,6 @@ import 'package:drivemanager/presenter/routes/navigation_service.dart';
 
 class FleetRegisterController {
   final SupabaseClient _supabase;
-
-  // Controladores para obtenção de informações no input do usuário gestor
   final TextEditingController plateController;
   final TextEditingController brandController;
   final TextEditingController modelController;
@@ -21,22 +19,33 @@ class FleetRegisterController {
     this.trackerImeiController,
   );
 
-  // Função para salvar um novo veículo
   Future<void> saveVehicle() async {
-    final newVehicle = {
-      'plate_number': plateController.text,
-      'brand': brandController.text,
-      'model': modelController.text,
-      'mileage': mileageController.text,
-      'imei': trackerImeiController.text,
-    };
+    try {
+      final mileage = double.tryParse(mileageController.text.replaceAll(',', '.')) ?? 0.0;
+      final imei = int.tryParse(trackerImeiController.text);
 
-    final response = await _supabase.from('vehicles').insert(newVehicle);
+      if (imei == null) {
+        NavigationService.showSnackBar('O IMEI deve ser um número válido.');
+        return;
+      }
 
-    if (response == null) {
-      NavigationService.goBack(result: newVehicle);
-    } else {
-      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error!.message}');
+      final newVehicle = {
+        'plate_number': plateController.text,
+        'brand': brandController.text,
+        'model': modelController.text,
+        'mileage': mileage,
+        'imei': imei,
+      };
+
+      final response = await _supabase.from('vehicles').insert(newVehicle);
+
+      if (response.error == null) {
+        NavigationService.goBack(result: newVehicle);
+      } else {
+        NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error!.message}');
+      }
+    } catch (e) {
+      NavigationService.showSnackBar('Erro ao salvar veículo: $e');
     }
   }
 }

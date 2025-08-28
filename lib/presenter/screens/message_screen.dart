@@ -1,34 +1,33 @@
 ﻿import 'package:drivemanager/presenter/controllers/message_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:drivemanager/data/model/notification.dart';
 
 class MessageScreen extends StatelessWidget {
   const MessageScreen({
     super.key,
-    this.messages, // Lista opcional de mensagens a ser exibida
+    required this.messages, // Alterado para List<Notification>
   });
 
-  final List<Map<String, dynamic>>? messages; // Lista de mensagens
+  final List<Notification> messages;
 
   @override
   Widget build(BuildContext context) {
-    final SupabaseClient supabaseClient = Supabase.instance.client; // Obtém o cliente Supabase
-    final MessageController messageController =
-        MessageController(supabaseClient); // Inicializa o controlador de mensagens
+    final SupabaseClient supabaseClient = Supabase.instance.client;
+    final MessageController messageController = MessageController(supabaseClient);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mensagens'), // Título da AppBar
+        title: const Text('Mensagens'),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // Botão de voltar
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); // Volta para a tela anterior
+            Navigator.pop(context);
           },
         ),
       ),
       body: ListView(
-        children: messages!.map((message) {
-          // Cria um ListTile para cada mensagem
+        children: messages.map((message) {
           return ListTile(
             leading: const Icon(
               Icons.settings,
@@ -36,15 +35,16 @@ class MessageScreen extends StatelessWidget {
               color: Colors.green,
             ),
             title: Text(
-              message['plate_number'] ?? 'Sem placa', // Número da placa
+              message.plateNumber ?? 'Sem placa',
             ),
             subtitle: Text(
-              message['message'] ?? 'Sem mensagem', // Mensagem
+              message.message,
             ),
             trailing: TextButton(
               onPressed: () {
-                // Solicita suporte quando o botão é pressionado
-                messageController.requestSupport(context, message['plate_number']);
+                if (message.plateNumber != null) {
+                  messageController.requestSupport(context, message.plateNumber!);
+                }
               },
               child: const Text('Solicitar Suporte'),
             ),

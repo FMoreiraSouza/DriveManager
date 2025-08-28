@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/presenter/controllers/home_controller.dart';
 import 'package:drivemanager/presenter/controllers/login_controller.dart';
 import 'package:drivemanager/presenter/screens/message_screen.dart';
+import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/core/utils/load_panel.dart';
+import 'package:flutter/material.dart' hide Notification;
 
 class HomeScreen extends StatefulWidget {
   final LoginController loginController;
@@ -25,7 +25,6 @@ class HomeScreenState extends State<HomeScreen> {
       widget.loginController,
       (isLoggingOut) {
         if (mounted) {
-          // Verifica se o widget está montado
           setState(() {
             _isLoggingOut = isLoggingOut;
           });
@@ -34,13 +33,11 @@ class HomeScreenState extends State<HomeScreen> {
     );
     _homeController.fetchMessages().then((_) {
       if (mounted) {
-        // Verifica se o widget está montado
         setState(() {});
       }
     });
     _homeController.subscribeNotifications((message) {
       if (mounted) {
-        // Verifica se o widget está montado
         _showSnackBar(message);
       }
     });
@@ -55,7 +52,6 @@ class HomeScreenState extends State<HomeScreen> {
   void _showSnackBar(String message) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        // Verifica se o widget está montado
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         final snackBar = SnackBar(
           content: Text(
@@ -104,7 +100,9 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MessageScreen(messages: _homeController.messages),
+                    builder: (context) => MessageScreen(
+                      messages: _homeController.messages, // Passa List<Notification> diretamente
+                    ),
                   ),
                 );
               },

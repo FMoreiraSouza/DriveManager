@@ -1,41 +1,52 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:drivemanager/data/model/vehicle.dart';
 
 class FleetList extends StatelessWidget {
   const FleetList({
     super.key,
     this.onButtonClick,
-    this.fleetList,
-    this.coordinatesList,
+    required this.fleetList,
+    required this.coordinatesList,
   });
 
-  final Function()? onButtonClick; // Função chamada ao clicar no botão flutuante.
-  final List<Map<String, dynamic>>? fleetList; // Lista de veículos.
-  final List<Map<String, dynamic>>? coordinatesList; // Lista de coordenadas dos veículos.
+  final VoidCallback? onButtonClick;
+  final List<Vehicle> fleetList;
+  final List<VehicleCoordinates> coordinatesList;
+
+  // Método auxiliar para encontrar coordenadas por IMEI
+  VehicleCoordinates? _findCoordinatesByImei(int? imei) {
+    if (imei == null) return null;
+    try {
+      return coordinatesList.firstWhere(
+        (coord) => coord.imei == imei,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final NumberFormat mileageFormat =
-        NumberFormat("#,##0.0", "pt_BR"); // Formato de quilometragem.
+    final NumberFormat mileageFormat = NumberFormat("#,##0.0", "pt_BR");
 
     return Stack(
       children: <Widget>[
         Positioned.fill(
           child: ListView.builder(
-            itemCount: fleetList?.length ?? 0, // Número de itens na lista.
+            itemCount: fleetList.length,
             itemBuilder: (context, index) {
-              final vehicle = fleetList?[index];
-              final coordinates = (coordinatesList != null && coordinatesList!.length > index)
-                  ? coordinatesList![index]
-                  : {};
-              final mileage = vehicle?['mileage'] ?? 0;
-              final isStopped = coordinates['isStopped'] ?? false;
-              final speed = coordinates['speed'] ?? 0.0;
+              final vehicle = fleetList[index];
+              final coordinates = _findCoordinatesByImei(vehicle.imei);
+
+              final mileage = vehicle.mileage;
+              final isStopped = coordinates?.isStopped ?? true;
+              final speed = coordinates?.speed ?? 0.0;
 
               return Card(
                 color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)), // Bordas arredondadas.
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
@@ -43,10 +54,10 @@ class FleetList extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.directions_car), // Ícone de carro.
+                          const Icon(Icons.directions_car),
                           Expanded(
                             child: Text(
-                              vehicle?['plate_number'] ?? 'Sem placa', // Número da placa.
+                              vehicle.plateNumber,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -56,7 +67,7 @@ class FleetList extends StatelessWidget {
                             width: 10.0,
                             height: 10.0,
                             decoration: BoxDecoration(
-                              color: isStopped ? Colors.red : Colors.green, // Indicador de status.
+                              color: isStopped ? Colors.red : Colors.green,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -65,13 +76,24 @@ class FleetList extends StatelessWidget {
                       const Divider(),
                       Row(
                         children: [
-                          const Icon(Icons.speed), // Ícone de velocidade.
-                          Text('${mileageFormat.format(speed)} Km/h'), // Velocidade formatada.
+                          const Icon(Icons.speed),
+                          Text('${mileageFormat.format(speed)} Km/h'),
                           const SizedBox(width: 15),
-                          const Icon(Icons.emoji_transportation), // Ícone de transporte.
-                          Text('${mileageFormat.format(mileage)} Km'), // Quilometragem formatada.
+                          const Icon(Icons.emoji_transportation),
+                          Text('${mileageFormat.format(mileage)} Km'),
                         ],
                       ),
+                      Text('${vehicle.brand} ${vehicle.model}'),
+                      if (vehicle.imei == null)
+                        const Text(
+                          'IMEI não disponível',
+                          style: TextStyle(color: Colors.grey),
+                        )
+                      else
+                        Text(
+                          'IMEI: ${vehicle.imei}',
+                          style: const TextStyle(color: Colors.grey),
+                        ),
                     ],
                   ),
                 ),
@@ -83,8 +105,8 @@ class FleetList extends StatelessWidget {
           bottom: 16.0,
           right: 16.0,
           child: FloatingActionButton(
-            onPressed: onButtonClick, // Função chamada ao clicar no botão flutuante.
-            child: const Icon(Icons.add), // Ícone de adicionar.
+            onPressed: onButtonClick,
+            child: const Icon(Icons.add),
           ),
         ),
       ],
