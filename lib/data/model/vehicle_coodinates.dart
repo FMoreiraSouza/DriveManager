@@ -25,20 +25,4 @@
       timestamp: DateTime.parse(map['timestamp'] as String),
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'imei': imei,
-      'latitude': latitude,
-      'longitude': longitude,
-      'speed': speed,
-      'isStopped': isStopped,
-      'timestamp': timestamp.toIso8601String(),
-    };
-  }
-
-  @override
-  String toString() {
-    return 'VehicleCoordinates{imei: $imei, latitude: $latitude, longitude: $longitude, speed: $speed, isStopped: $isStopped, timestamp: $timestamp}';
-  }
 }

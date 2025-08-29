@@ -23,35 +23,4 @@
       isRead: map['is_read'] as bool? ?? false,
     );
   }
-
-  Map<String, dynamic> toMap() {
-    return {
-      if (id != null) 'id': id,
-      if (plateNumber != null) 'plate_number': plateNumber,
-      'message': message,
-      'timestamp': timestamp.toIso8601String(),
-      'is_read': isRead,
-    };
-  }
-
-  Notification copyWith({
-    int? id,
-    String? plateNumber,
-    String? message,
-    DateTime? timestamp,
-    bool? isRead,
-  }) {
-    return Notification(
-      id: id ?? this.id,
-      plateNumber: plateNumber ?? this.plateNumber,
-      message: message ?? this.message,
-      timestamp: timestamp ?? this.timestamp,
-      isRead: isRead ?? this.isRead,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'Notification(id: $id, plateNumber: $plateNumber, message: $message, timestamp: $timestamp, isRead: $isRead)';
-  }
 }
