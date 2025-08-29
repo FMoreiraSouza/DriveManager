@@ -2,6 +2,8 @@
 import 'package:drivemanager/view/widgets/message_item_widget.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
+import 'package:drivemanager/presenter/controllers/message_controller.dart';
 
 class MessageScreen extends StatefulWidget {
   const MessageScreen({
@@ -18,20 +20,35 @@ class MessageScreen extends StatefulWidget {
 class _MessageScreenState extends State<MessageScreen> {
   final supabaseClient = Supabase.instance.client;
   late List<Notification> currentMessages;
+  late MessageController _messageController;
 
   @override
   void initState() {
     super.initState();
     currentMessages = widget.messages;
+    _messageController = MessageController(
+      vehicleRepository: VehicleRepositoryImpl(supabaseClient),
+    );
   }
 
   Future<void> _handleRequestSupport(String plateNumber) async {
-    _showDialog(
-      'Solicitação de Suporte para $plateNumber',
-      'Suporte enviado com sucesso!',
-      Icons.check,
-      Colors.green,
-    );
+    try {
+      await _messageController.handleSupportRequest(plateNumber);
+
+      _showDialog(
+        'Solicitação de Suporte para $plateNumber',
+        'Suporte enviado com sucesso! O status de defeito foi atualizado.',
+        Icons.check,
+        Colors.green,
+      );
+    } catch (e) {
+      _showDialog(
+        'Erro',
+        'Ocorreu um erro ao processar a solicitação: $e',
+        Icons.error,
+        Colors.red,
+      );
+    }
   }
 
   void _showDialog(String title, String content, IconData icon, Color color) {

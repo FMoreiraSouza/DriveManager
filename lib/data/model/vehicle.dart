@@ -5,6 +5,7 @@
   final String model;
   final double mileage;
   final String imei;
+  final bool hasDefect;
 
   Vehicle({
     required this.id,
@@ -13,6 +14,7 @@
     required this.model,
     required this.mileage,
     required this.imei,
+    this.hasDefect = false,
   });
 
   factory Vehicle.fromMap(Map<String, dynamic> map) {
@@ -23,22 +25,7 @@
       model: map['model'] as String,
       mileage: (map['mileage'] as num).toDouble(),
       imei: map['imei'].toString(),
+      hasDefect: map['hasDefect'] as bool,
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'plate_number': plateNumber,
-      'brand': brand,
-      'model': model,
-      'mileage': mileage,
-      'imei': imei,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'Vehicle{id: $id, plateNumber: $plateNumber, brand: $brand, model: $model, mileage: $mileage, imei: $imei}';
   }
 }

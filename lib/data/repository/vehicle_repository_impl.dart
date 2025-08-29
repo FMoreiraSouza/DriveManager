@@ -64,4 +64,19 @@ class VehicleRepositoryImpl implements VehicleRepository {
         )
         .subscribe();
   }
+
+  @override
+  Future<bool> updateVehicleDefectStatus(String plateNumber, bool hasDefect) async {
+    try {
+      final response = await _supabase
+          .from('vehicles')
+          .update({'hasDefect': hasDefect})
+          .eq('plate_number', plateNumber)
+          .select();
+
+      return (response as List).isNotEmpty;
+    } catch (e) {
+      throw Exception('Erro ao atualizar status de defeito do veículo: $e');
+    }
+  }
 }
