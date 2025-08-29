@@ -14,6 +14,7 @@ class HomeController {
   final SubscribeToNotificationsUsecase _subscribeToNotifications;
   final HandleMenuSelectionUsecase _handleMenuSelection;
   final Function(bool) onLogoutStatusChanged;
+  final Function(List<Notification>) onMessagesUpdated; // Novo callback
 
   bool isLoggingOut = false;
   int selectedIndex = 0;
@@ -29,6 +30,7 @@ class HomeController {
     required NotificationRepository notificationRepository,
     required AuthRepository authRepository,
     required this.onLogoutStatusChanged,
+    required this.onMessagesUpdated, // Novo parâmetro
   })  : _fetchNotifications = FetchNotificationsUsecase(notificationRepository),
         _subscribeToNotifications = SubscribeToNotificationsUsecase(notificationRepository),
         _handleMenuSelection = HandleMenuSelectionUsecase(authRepository);
@@ -36,13 +38,17 @@ class HomeController {
   Future<void> fetchMessages() async {
     try {
       messages = await _fetchNotifications.execute();
+      onMessagesUpdated(messages); // Notificar com as mensagens atualizadas
     } catch (e) {
       throw Exception('Erro ao buscar mensagens: $e');
     }
   }
 
   Future<void> subscribeNotifications(Function(String) onMessageReceived) async {
-    _notificationChannel = _subscribeToNotifications.execute(onMessageReceived);
+    _notificationChannel = _subscribeToNotifications.execute((message) {
+      onMessageReceived(message);
+      fetchMessages(); // Atualizar mensagens quando receber nova notificação
+    });
   }
 
   void unsubscribeNotifications() {

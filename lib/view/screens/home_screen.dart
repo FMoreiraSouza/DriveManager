@@ -7,6 +7,8 @@ import 'package:drivemanager/core/utils/load_panel.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../data/model/notification.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -17,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   late HomeController _homeController;
   bool _isLoggingOut = false;
+  List<Notification> _currentMessages = []; // Lista local de mensagens
 
   @override
   void initState() {
@@ -26,6 +29,7 @@ class HomeScreenState extends State<HomeScreen> {
       notificationRepository: NotificationRepositoryImpl(supabase),
       authRepository: AuthRepositoryImpl(supabase),
       onLogoutStatusChanged: _handleLogoutStatusChanged,
+      onMessagesUpdated: _handleMessagesUpdated, // Novo callback
     );
     _homeController.fetchMessages().then((_) {
       if (mounted) {
@@ -43,9 +47,19 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _handleMessagesUpdated(List<Notification> updatedMessages) {
+    if (mounted) {
+      setState(() {
+        _currentMessages = updatedMessages;
+      });
+    }
+  }
+
   void _handleNotification(String message) {
     if (mounted) {
       _showSnackBar(message);
+      // Atualizar a lista de mensagens quando receber nova notificação
+      _homeController.fetchMessages();
     }
   }
 
@@ -114,7 +128,7 @@ class HomeScreenState extends State<HomeScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MessageScreen(
-                      messages: _homeController.messages,
+                      messages: _currentMessages,
                     ),
                   ),
                 );

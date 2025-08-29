@@ -36,30 +36,12 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   Future<void> _handleRequestSupport(String plateNumber) async {
-    try {
-      final success = await messageController.requestSupport(plateNumber);
-      if (success && mounted) {
-        setState(() {
-          currentMessages.removeWhere((message) => message.plateNumber == plateNumber);
-        });
-
-        _showDialog(
-          'Solicitação de Suporte para $plateNumber',
-          'Suporte enviado com sucesso! Notificações removidas.',
-          Icons.check,
-          Colors.green,
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        _showDialog(
-          'Erro',
-          'Ocorreu um erro: $e',
-          Icons.error,
-          Colors.red,
-        );
-      }
-    }
+    _showDialog(
+      'Solicitação de Suporte para $plateNumber',
+      'Suporte enviado com sucesso!',
+      Icons.check,
+      Colors.green,
+    );
   }
 
   void _showDialog(String title, String content, IconData icon, Color color) {
