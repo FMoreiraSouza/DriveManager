@@ -1,8 +1,10 @@
 import 'package:drivemanager/presenter/controllers/fleet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/presenter/widgets/empty_fleet.dart';
-import 'package:drivemanager/presenter/widgets/fleet_list.dart';
+import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
+import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
+import 'package:drivemanager/view/widgets/empty_fleet_widget.dart';
+import 'package:drivemanager/view/widgets/fleet_list_widget.dart';
 
 class FleetScreen extends StatefulWidget {
   const FleetScreen({super.key});
@@ -19,12 +21,17 @@ class _FleetScreenState extends State<FleetScreen> {
     super.initState();
     final supabase = Supabase.instance.client;
     _controller = FleetController(
-      supabase: supabase,
+      vehicleRepository: VehicleRepositoryImpl(supabase),
+      coordinatesRepository: VehicleCoordinatesRepositoryImpl(supabase),
       onFleetUpdated: _updateFleetList,
       onCoordinatesUpdated: _updateCoordinatesList,
     );
-    _controller.fetchFleetList();
-    _controller.fetchCoordinatesList();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await _controller.fetchFleetList();
+    await _controller.fetchCoordinatesList();
     _controller.subscribeToFleetUpdates();
     _controller.subscribeToCoordinatesUpdates();
   }
@@ -36,15 +43,19 @@ class _FleetScreenState extends State<FleetScreen> {
   }
 
   void _updateFleetList() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _updateCoordinatesList() {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _openFleetRegisterScreen() async {
-    await Navigator.pushNamed(context, '/fleet-register');
+    await Navigator.pushNamed(context, '/fleet_register');
     _controller.fetchFleetList();
   }
 
@@ -56,8 +67,8 @@ class _FleetScreenState extends State<FleetScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: _controller.fleetList.isEmpty && !_controller.isLoading
-                ? EmptyFleet(onClick: _openFleetRegisterScreen)
-                : FleetList(
+                ? EmptyFleetWidget(onClick: _openFleetRegisterScreen)
+                : FleetListWidget(
                     onButtonClick: _openFleetRegisterScreen,
                     fleetList: _controller.fleetList,
                     coordinatesList: _controller.coordinatesList,

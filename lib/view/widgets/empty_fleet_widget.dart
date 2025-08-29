@@ -1,11 +1,9 @@
-﻿import 'package:drivemanager/presenter/routes/navigation_service.dart';
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 
-class EmptyFleet extends StatelessWidget {
-  // Função a ser chamada quando o usuário interage com o widget.
-  const EmptyFleet({super.key, required this.onClick});
+class EmptyFleetWidget extends StatelessWidget {
+  const EmptyFleetWidget({super.key, required this.onClick});
 
-  final Function onClick;
+  final VoidCallback onClick;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +11,7 @@ class EmptyFleet extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text(
-          'Sem frota cadastrada', // Mensagem informativa.
+          'Sem frota cadastrada',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.black54,
@@ -21,22 +19,18 @@ class EmptyFleet extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () {
-            onClick; // Ação a ser definida.
-          },
+          onTap: onClick,
           child: Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () {
-                NavigationService.pushNamed(
-                    '/fleet-register'); // Navega para a tela de registro de frota.
-              },
+              onTap: onClick,
               child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.arrow_forward, color: Colors.green), // Ícone de navegação.
+                  Icon(Icons.arrow_forward, color: Colors.green),
                   SizedBox(width: 8.0),
                   Text(
-                    'Comece já!', // Texto de incentivo.
+                    'Comece já!',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
@@ -49,7 +43,7 @@ class EmptyFleet extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16.0),
-        Image.asset('assets/images/register_your_fleet.png'), // Imagem ilustrativa.
+        Image.asset('assets/images/register_your_fleet.png'),
       ],
     );
   }

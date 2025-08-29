@@ -1,42 +1,53 @@
-﻿import 'package:flutter/material.dart';
+﻿import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
+import 'package:drivemanager/domain/usecase/register_vehicle_usecase.dart';
+import 'package:drivemanager/routes/navigation_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/presenter/routes/navigation_service.dart';
 
 class FleetRegisterController {
-  final SupabaseClient _supabase;
+  final RegisterVehicleUsecase _registerVehicle;
+  String _plate = '';
+  String _brand = '';
+  String _model = '';
+  String _mileage = '';
+  String _trackerImei = '';
 
-  // Controladores para obtenção de informações no input do usuário gestor
-  final TextEditingController plateController;
-  final TextEditingController brandController;
-  final TextEditingController modelController;
-  final TextEditingController mileageController;
-  final TextEditingController trackerImeiController;
+  FleetRegisterController(SupabaseClient supabase)
+      : _registerVehicle = RegisterVehicleUsecase(VehicleRepositoryImpl(supabase));
 
-  FleetRegisterController(
-    this._supabase,
-    this.plateController,
-    this.brandController,
-    this.modelController,
-    this.mileageController,
-    this.trackerImeiController,
-  );
+  void setPlate(String value) => _plate = value;
+  void setBrand(String value) => _brand = value;
+  void setModel(String value) => _model = value;
+  void setMileage(String value) => _mileage = value;
+  void setTrackerImei(String value) => _trackerImei = value;
 
-  // Função para salvar um novo veículo
   Future<void> saveVehicle() async {
-    final newVehicle = {
-      'plate_number': plateController.text,
-      'brand': brandController.text,
-      'model': modelController.text,
-      'mileage': mileageController.text,
-      'imei': trackerImeiController.text,
-    };
+    try {
+      final mileage = double.tryParse(_mileage.replaceAll(',', '.')) ?? 0.0;
 
-    final response = await _supabase.from('vehicles').insert(newVehicle);
+      if (_trackerImei.isEmpty) {
+        NavigationService.showSnackBar('O IMEI não pode estar vazio.');
+        return;
+      }
 
-    if (response.error == null) {
-      NavigationService.goBack(result: newVehicle);
-    } else {
-      NavigationService.showSnackBar('Erro ao salvar veículo: ${response.error!.message}');
+      await _registerVehicle.execute(
+        plateNumber: _plate,
+        brand: _brand,
+        model: _model,
+        mileage: mileage,
+        imei: _trackerImei,
+      );
+
+      NavigationService.showSnackBar('Veículo cadastrado com sucesso!');
+      NavigationService.goBack(result: {
+        'plate_number': _plate,
+        'brand': _brand,
+        'model': _model,
+        'mileage': mileage,
+        'imei': _trackerImei,
+      });
+    } catch (e) {
+      NavigationService.showSnackBar('Erro ao salvar veículo: $e');
+      rethrow;
     }
   }
 }

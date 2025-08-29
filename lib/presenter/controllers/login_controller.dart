@@ -1,56 +1,50 @@
-import 'package:get_storage/get_storage.dart';
-import 'package:drivemanager/presenter/routes/navigation_service.dart';
+import 'package:drivemanager/routes/navigation_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-// Controlador para gerenciamento de login
 class LoginController {
-  final SupabaseClient _supabaseClient; // Cliente Supabase
+  final SupabaseClient _supabase;
 
-  // Construtor que recebe o cliente Supabase
-  LoginController(this._supabaseClient);
+  LoginController({
+    required SupabaseClient supabase,
+  }) : _supabase = supabase;
 
-  // Função para autenticar o usuário
   Future<void> signIn({
     required String email,
     required String password,
   }) async {
     try {
-      final AuthResponse response = await _supabaseClient.auth.signInWithPassword(
+      final response = await _supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
 
-      if (response.session != null) {
-        // Extraia o nome do usuário até o símbolo '@'
-        String userName = email.split('@')[0].toUpperCase();
-
-        // Salve o nome do usuário no GetStorage
-        final box = GetStorage();
-        box.write('user_name', userName);
-
-        NavigationService.pushReplacementNamed('/home'); // Navega para a tela inicial
-      } else {
-        NavigationService.showSnackBar('Login falhou. Tente novamente.'); // Exibe mensagem de erro
+      if (response.user == null) {
+        throw Exception('Falha no login: usuário não retornado');
       }
+
+      NavigationService.pushReplacementNamed('/home');
     } catch (e) {
-      NavigationService.showSnackBar(e.toString()); // Exibe mensagem de erro
+      NavigationService.showSnackBar('Erro ao fazer login: $e');
+      rethrow;
     }
   }
 
-  // Função para sair da conta
   Future<void> signOut() async {
     try {
-      await _supabaseClient.auth.signOut();
-      NavigationService.pushReplacementNamed('/login'); // Navega de volta para a tela de login
+      await _supabase.auth.signOut();
+      NavigationService.pushReplacementNamed('/login');
     } catch (e) {
-      NavigationService.showSnackBar(
-          'Erro ao fazer logout. Tente novamente.'); // Exibe mensagem de erro
+      NavigationService.showSnackBar('Erro ao fazer logout: $e');
+      rethrow;
     }
   }
 
-  // Verifica se o usuário está autenticado
   Future<bool> isAuthenticated() async {
-    final session = _supabaseClient.auth.currentSession;
-    return session != null; // Retorna true se a sessão estiver ativa
+    try {
+      final session = _supabase.auth.currentSession;
+      return session != null;
+    } catch (e) {
+      return false;
+    }
   }
 }
