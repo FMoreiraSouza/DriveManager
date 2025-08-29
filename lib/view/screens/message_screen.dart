@@ -1,8 +1,4 @@
 ﻿import 'package:drivemanager/data/model/notification.dart';
-import 'package:drivemanager/data/repository/vehicle_coordinates_repository_impl.dart';
-import 'package:drivemanager/data/repository/vehicle_repository_impl.dart';
-import 'package:drivemanager/data/repository/notification_repository_impl.dart';
-import 'package:drivemanager/presenter/controllers/message_controller.dart';
 import 'package:drivemanager/view/widgets/message_item_widget.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -21,18 +17,12 @@ class MessageScreen extends StatefulWidget {
 
 class _MessageScreenState extends State<MessageScreen> {
   final supabaseClient = Supabase.instance.client;
-  late final MessageController messageController;
   late List<Notification> currentMessages;
 
   @override
   void initState() {
     super.initState();
     currentMessages = widget.messages;
-    messageController = MessageController(
-      vehicleRepository: VehicleRepositoryImpl(supabaseClient),
-      vehicleCoordinatesRepository: VehicleCoordinatesRepositoryImpl(supabaseClient),
-      notificationRepository: NotificationRepositoryImpl(supabaseClient),
-    );
   }
 
   Future<void> _handleRequestSupport(String plateNumber) async {

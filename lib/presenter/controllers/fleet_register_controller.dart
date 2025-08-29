@@ -24,8 +24,6 @@ class FleetRegisterController {
     try {
       final mileage = double.tryParse(_mileage.replaceAll(',', '.')) ?? 0.0;
 
-      // REMOVER a conversão para int - manter como String
-      // Apenas validar se não está vazio
       if (_trackerImei.isEmpty) {
         NavigationService.showSnackBar('O IMEI não pode estar vazio.');
         return;
@@ -36,7 +34,7 @@ class FleetRegisterController {
         brand: _brand,
         model: _model,
         mileage: mileage,
-        imei: _trackerImei, // Agora é String, não int
+        imei: _trackerImei,
       );
 
       NavigationService.showSnackBar('Veículo cadastrado com sucesso!');
@@ -45,7 +43,7 @@ class FleetRegisterController {
         'brand': _brand,
         'model': _model,
         'mileage': mileage,
-        'imei': _trackerImei, // Manter como String
+        'imei': _trackerImei,
       });
     } catch (e) {
       NavigationService.showSnackBar('Erro ao salvar veículo: $e');

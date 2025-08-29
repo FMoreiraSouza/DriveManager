@@ -26,8 +26,6 @@ class VehicleCoordinatesRepositoryImpl implements VehicleCoordinatesRepository {
           .from('vehicle_coordinates')
           .update({'isStopped': isStopped}).eq('imei', imei);
 
-      // Verifica se a atualização foi bem-sucedida
-      // No Supabase, uma atualização bem-sucedida geralmente retorna os dados atualizados
       return response != null;
     } catch (e) {
       throw Exception('Erro ao atualizar status do veículo: $e');

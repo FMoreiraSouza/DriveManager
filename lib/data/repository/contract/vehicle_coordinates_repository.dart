@@ -3,6 +3,6 @@ import 'package:drivemanager/data/model/vehicle_coodinates.dart';
 
 abstract class VehicleCoordinatesRepository {
   Future<List<VehicleCoordinates>> fetchCoordinates();
-  Future<bool> updateVehicleStatus(String imei, bool isStopped); // Mudou para Future<bool>
+  Future<bool> updateVehicleStatus(String imei, bool isStopped);
   RealtimeChannel subscribeToUpdates(void Function() callback);
 }

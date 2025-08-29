@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   late HomeController _homeController;
   bool _isLoggingOut = false;
-  List<Notification> _currentMessages = []; // Lista local de mensagens
+  List<Notification> _currentMessages = [];
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class HomeScreenState extends State<HomeScreen> {
       notificationRepository: NotificationRepositoryImpl(supabase),
       authRepository: AuthRepositoryImpl(supabase),
       onLogoutStatusChanged: _handleLogoutStatusChanged,
-      onMessagesUpdated: _handleMessagesUpdated, // Novo callback
+      onMessagesUpdated: _handleMessagesUpdated,
     );
     _homeController.fetchMessages().then((_) {
       if (mounted) {
@@ -58,7 +58,6 @@ class HomeScreenState extends State<HomeScreen> {
   void _handleNotification(String message) {
     if (mounted) {
       _showSnackBar(message);
-      // Atualizar a lista de mensagens quando receber nova notificação
       _homeController.fetchMessages();
     }
   }
