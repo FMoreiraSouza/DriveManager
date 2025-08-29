@@ -1,14 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:drivemanager/core/themes/app_theme.dart';
+import 'package:drivemanager/data/repository/auth_repository_impl.dart';
+import 'package:drivemanager/data/repository/notification_repository_impl.dart';
 import 'package:drivemanager/presenter/controllers/home_controller.dart';
-import 'package:drivemanager/presenter/controllers/login_controller.dart';
-import 'package:drivemanager/presenter/screens/message_screen.dart';
+import 'package:drivemanager/view/screens/message_screen.dart';
+import 'package:drivemanager/core/themes/app_theme.dart';
 import 'package:drivemanager/core/utils/load_panel.dart';
+import 'package:flutter/material.dart' hide Notification;
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../data/model/notification.dart';
 
 class HomeScreen extends StatefulWidget {
-  final LoginController loginController;
-
-  const HomeScreen({super.key, required this.loginController});
+  const HomeScreen({super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -17,33 +19,47 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   late HomeController _homeController;
   bool _isLoggingOut = false;
+  List<Notification> _currentMessages = [];
 
   @override
   void initState() {
     super.initState();
+    final supabase = Supabase.instance.client;
     _homeController = HomeController(
-      widget.loginController,
-      (isLoggingOut) {
-        if (mounted) {
-          // Verifica se o widget está montado
-          setState(() {
-            _isLoggingOut = isLoggingOut;
-          });
-        }
-      },
+      notificationRepository: NotificationRepositoryImpl(supabase),
+      authRepository: AuthRepositoryImpl(supabase),
+      onLogoutStatusChanged: _handleLogoutStatusChanged,
+      onMessagesUpdated: _handleMessagesUpdated,
     );
     _homeController.fetchMessages().then((_) {
       if (mounted) {
-        // Verifica se o widget está montado
         setState(() {});
       }
     });
-    _homeController.subscribeNotifications((message) {
-      if (mounted) {
-        // Verifica se o widget está montado
-        _showSnackBar(message);
-      }
-    });
+    _homeController.subscribeNotifications(_handleNotification);
+  }
+
+  void _handleLogoutStatusChanged(bool isLoggingOut) {
+    if (mounted) {
+      setState(() {
+        _isLoggingOut = isLoggingOut;
+      });
+    }
+  }
+
+  void _handleMessagesUpdated(List<Notification> updatedMessages) {
+    if (mounted) {
+      setState(() {
+        _currentMessages = updatedMessages;
+      });
+    }
+  }
+
+  void _handleNotification(String message) {
+    if (mounted) {
+      _showSnackBar(message);
+      _homeController.fetchMessages();
+    }
   }
 
   @override
@@ -55,7 +71,6 @@ class HomeScreenState extends State<HomeScreen> {
   void _showSnackBar(String message) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        // Verifica se o widget está montado
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         final snackBar = SnackBar(
           content: Text(
@@ -76,6 +91,13 @@ class HomeScreenState extends State<HomeScreen> {
         scaffoldMessenger.showSnackBar(snackBar);
       }
     });
+  }
+
+  Future<void> _handleMenuSelection(String result) async {
+    await _homeController.handleMenuSelection(result);
+    if (result == 'sair' && mounted) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
   }
 
   @override
@@ -104,7 +126,9 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MessageScreen(messages: _homeController.messages),
+                    builder: (context) => MessageScreen(
+                      messages: _currentMessages,
+                    ),
                   ),
                 );
               },
@@ -116,9 +140,7 @@ class HomeScreenState extends State<HomeScreen> {
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.more_vert),
-            onSelected: (result) {
-              _homeController.handleMenuSelection(result);
-            },
+            onSelected: _handleMenuSelection,
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
                 value: 'info',

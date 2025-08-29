@@ -1,14 +1,12 @@
-﻿import 'package:get_storage/get_storage.dart';
+﻿import 'package:drivemanager/data/repository/contract/user_repository.dart';
+import 'package:drivemanager/domain/usecase/get_username_usecase.dart';
 
 class InfoController {
-  final GetStorage _box;
+  final GetUserNameUsecase _getUserName;
 
-  // Construtor que recebe o GetStorage
-  InfoController(this._box);
+  InfoController(UserRepository userRepository) : _getUserName = GetUserNameUsecase(userRepository);
 
-  // Obtém o nome do usuário armazenado
   String getUserName() {
-    return _box.read('user_name') ??
-        'Usuário'; // Retorna o nome do usuário ou 'Usuário' se não encontrado
+    return _getUserName.execute();
   }
 }

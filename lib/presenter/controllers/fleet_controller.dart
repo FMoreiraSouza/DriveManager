@@ -1,68 +1,72 @@
 ﻿import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:drivemanager/data/model/vehicle.dart';
+import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_coordinates_repository.dart';
+import 'package:drivemanager/data/repository/contract/vehicle_repository.dart';
+import 'package:drivemanager/domain/usecase/fetch_coordinates_list_usecase.dart';
+import 'package:drivemanager/domain/usecase/fetch_fleet_list_usecase.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_coordinate_updates_usecase.dart';
+import 'package:drivemanager/domain/usecase/subscribe_to_fleet_updates_usecase.dart';
 
 class FleetController {
-  final SupabaseClient _supabase; // Cliente Supabase para interagir com o banco de dados.
-  final void Function() onFleetUpdated; // Callback chamado quando a lista de veículos é atualizada.
-  final void Function()
-      onCoordinatesUpdated; // Callback chamado quando a lista de coordenadas é atualizada.
+  final FetchFleetListUsecase _fetchFleetList;
+  final FetchCoordinatesListUsecase _fetchCoordinatesList;
+  final SubscribeToFleetUpdatesUsecase _subscribeToFleetUpdates;
+  final SubscribeToCoordinatesUpdatesUsecase _subscribeToCoordinatesUpdates;
+  final void Function() onFleetUpdated;
+  final void Function() onCoordinatesUpdated;
 
-  List<Map<String, dynamic>> fleetList = []; // Lista que armazena os veículos.
-  List<Map<String, dynamic>> coordinatesList =
-      []; // Lista que armazena as coordenadas dos veículos.
-  bool isLoading = true; // Flag que indica se os dados estão sendo carregados.
+  List<Vehicle> fleetList = [];
+  List<VehicleCoordinates> coordinatesList = [];
+  bool isLoading = true;
 
-  late final RealtimeChannel
-      vehicleSubscription; // Canal de assinatura para atualizações de veículos.
-  late final RealtimeChannel
-      coordinatesSubscription; // Canal de assinatura para atualizações de coordenadas.
+  late final RealtimeChannel vehicleSubscription;
+  late final RealtimeChannel coordinatesSubscription;
 
   FleetController({
-    required SupabaseClient supabase,
+    required VehicleRepository vehicleRepository,
+    required VehicleCoordinatesRepository coordinatesRepository,
     required this.onFleetUpdated,
     required this.onCoordinatesUpdated,
-  }) : _supabase = supabase;
+  })  : _fetchFleetList = FetchFleetListUsecase(vehicleRepository),
+        _fetchCoordinatesList = FetchCoordinatesListUsecase(coordinatesRepository),
+        _subscribeToFleetUpdates = SubscribeToFleetUpdatesUsecase(vehicleRepository),
+        _subscribeToCoordinatesUpdates =
+            SubscribeToCoordinatesUpdatesUsecase(coordinatesRepository);
 
-  // Busca a lista de veículos no banco de dados e atualiza a lista local.
   Future<void> fetchFleetList() async {
     isLoading = true;
-    final response = await _supabase.from('vehicles').select();
-    fleetList = List<Map<String, dynamic>>.from(response);
-    isLoading = false;
-    onFleetUpdated();
+    try {
+      fleetList = await _fetchFleetList.execute();
+    } catch (e) {
+      throw Exception('Erro ao buscar lista de veículos: $e');
+    } finally {
+      isLoading = false;
+      onFleetUpdated();
+    }
   }
 
-  // Busca a lista de coordenadas no banco de dados e atualiza a lista local.
   Future<void> fetchCoordinatesList() async {
-    final response = await _supabase.from('vehicle_coordinates').select();
-    coordinatesList = List<Map<String, dynamic>>.from(response);
-    onCoordinatesUpdated();
+    try {
+      coordinatesList = await _fetchCoordinatesList.execute();
+      onCoordinatesUpdated();
+    } catch (e) {
+      throw Exception('Erro ao buscar coordenadas: $e');
+    }
   }
 
-  // Inscreve-se para atualizações em tempo real sobre a tabela de veículos.
   void subscribeToFleetUpdates() {
-    vehicleSubscription = _supabase
-        .channel('public:vehicles')
-        .onPostgresChanges(
-            event: PostgresChangeEvent.all,
-            schema: 'public',
-            table: 'vehicles',
-            callback: (_) => fetchFleetList())
-        .subscribe();
+    vehicleSubscription = _subscribeToFleetUpdates.execute(() {
+      fetchFleetList();
+    });
   }
 
-  // Inscreve-se para atualizações em tempo real sobre a tabela de coordenadas de veículos.
   void subscribeToCoordinatesUpdates() {
-    coordinatesSubscription = _supabase
-        .channel('public:vehicle_coordinates')
-        .onPostgresChanges(
-            event: PostgresChangeEvent.all,
-            schema: 'public',
-            table: 'vehicle_coordinates',
-            callback: (_) => fetchCoordinatesList())
-        .subscribe();
+    coordinatesSubscription = _subscribeToCoordinatesUpdates.execute(() {
+      fetchCoordinatesList();
+    });
   }
 
-  // Cancela as assinaturas quando o controlador não for mais necessário.
   void dispose() {
     vehicleSubscription.unsubscribe();
     coordinatesSubscription.unsubscribe();
