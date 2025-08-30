@@ -22,7 +22,7 @@ class MapScreenState extends State<MapScreen> {
     _mapController = MapController(
       vehicleCoordinatesRepository: VehicleCoordinatesRepositoryImpl(supabase),
       supabase: supabase,
-      updateUI: setState, // Passa o setState como callback
+      updateUI: setState,
     );
 
     _mapController.initializeSupabase();
@@ -44,7 +44,7 @@ class MapScreenState extends State<MapScreen> {
               },
               initialCameraPosition: CameraPosition(
                 target: _mapController.initialPosition,
-                zoom: 10,
+                zoom: 8,
               ),
               markers: _mapController.markers,
             )

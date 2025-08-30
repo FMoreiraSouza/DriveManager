@@ -11,7 +11,7 @@ class NavigationService {
     return navigatorKey.currentState!.pushReplacementNamed(routeName, arguments: arguments);
   }
 
-    static void goBack({dynamic result}) {
+  static void goBack({dynamic result}) {
     navigatorKey.currentState!.pop(result);
   }
 
