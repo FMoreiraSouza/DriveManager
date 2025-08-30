@@ -6,7 +6,7 @@ class SubscribeToVehicleCoordinatesUsecase {
 
   SubscribeToVehicleCoordinatesUsecase(this._supabase);
 
-  RealtimeChannel execute(void Function(VehicleCoordinates) onUpdate) {
+  RealtimeChannel execute(Function(VehicleCoordinates) onUpdate) {
     return _supabase
         .channel('public:vehicle_coordinates')
         .onPostgresChanges(

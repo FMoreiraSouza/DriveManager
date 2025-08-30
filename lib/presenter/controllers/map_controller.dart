@@ -16,10 +16,12 @@ class MapController {
   final LoadMarkersUsecase _loadMarkers;
   final SubscribeToVehicleCoordinatesUsecase _subscribeToVehicleCoordinates;
   late final RealtimeChannel _vehicleCoordinatesChannel;
+  final void Function(void Function()) updateUI;
 
   MapController({
     required VehicleCoordinatesRepository vehicleCoordinatesRepository,
     required SupabaseClient supabase,
+    required this.updateUI,
   })  : _loadMarkers = LoadMarkersUsecase(vehicleCoordinatesRepository),
         _subscribeToVehicleCoordinates = SubscribeToVehicleCoordinatesUsecase(supabase);
 
@@ -54,7 +56,7 @@ class MapController {
   }
 
   Future<void> _updateMarkerPosition(VehicleCoordinates coord) async {
-    final imei = coord.imei.toString();
+    final imei = coord.imei;
     final icon = await _getMarkerIcon(imei);
 
     _markers.removeWhere((marker) => marker.markerId.value == imei);
@@ -62,10 +64,15 @@ class MapController {
       Marker(
         markerId: MarkerId(imei),
         position: LatLng(coord.latitude, coord.longitude),
-        infoWindow: InfoWindow(title: imei),
+        infoWindow: InfoWindow(
+          title: 'Veículo $imei',
+          snippet: 'Velocidade: ${coord.speed} km/h',
+        ),
         icon: icon,
       ),
     );
+
+    updateUI(() {});
   }
 
   Future<BitmapDescriptor> _getMarkerIcon(String imei) async {
