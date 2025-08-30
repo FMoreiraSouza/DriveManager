@@ -11,13 +11,16 @@ class LoadMarkersUsecase {
     final coordinates = await _vehicleCoordinatesRepository.fetchCoordinates();
     final markers = <Marker>{};
     for (var coord in coordinates) {
-      final imei = coord.imei.toString();
+      final imei = coord.imei;
       final icon = await _getMarkerIcon(imei);
       markers.add(
         Marker(
           markerId: MarkerId(imei),
           position: LatLng(coord.latitude, coord.longitude),
-          infoWindow: InfoWindow(title: imei),
+          infoWindow: InfoWindow(
+            title: 'Veículo $imei',
+            snippet: 'Velocidade: ${coord.speed} km/h',
+          ),
           icon: icon,
         ),
       );

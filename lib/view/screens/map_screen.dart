@@ -18,10 +18,13 @@ class MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     final supabase = Supabase.instance.client;
+
     _mapController = MapController(
       vehicleCoordinatesRepository: VehicleCoordinatesRepositoryImpl(supabase),
       supabase: supabase,
+      updateUI: setState, // Passa o setState como callback
     );
+
     _mapController.initializeSupabase();
     _mapController.loadMap(
       (mapLoaded) => setState(() {}),

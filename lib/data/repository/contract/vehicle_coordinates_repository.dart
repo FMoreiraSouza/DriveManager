@@ -1,5 +1,5 @@
-﻿import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+﻿import 'package:drivemanager/data/model/vehicle_coodinates.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class VehicleCoordinatesRepository {
   Future<List<VehicleCoordinates>> fetchCoordinates();

@@ -35,14 +35,11 @@ class FleetController {
             SubscribeToCoordinatesUpdatesUsecase(coordinatesRepository);
 
   Future<void> fetchFleetList() async {
-    isLoading = true;
     try {
       fleetList = await _fetchFleetList.execute();
+      onFleetUpdated();
     } catch (e) {
       throw Exception('Erro ao buscar lista de veículos: $e');
-    } finally {
-      isLoading = false;
-      onFleetUpdated();
     }
   }
 
