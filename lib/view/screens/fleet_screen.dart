@@ -15,6 +15,7 @@ class FleetScreen extends StatefulWidget {
 
 class _FleetScreenState extends State<FleetScreen> {
   late FleetController _controller;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -30,10 +31,18 @@ class _FleetScreenState extends State<FleetScreen> {
   }
 
   Future<void> _initializeData() async {
-    await _controller.fetchFleetList();
-    await _controller.fetchCoordinatesList();
-    _controller.subscribeToFleetUpdates();
-    _controller.subscribeToCoordinatesUpdates();
+    try {
+      await _controller.fetchFleetList();
+      await _controller.fetchCoordinatesList();
+      _controller.subscribeToFleetUpdates();
+      _controller.subscribeToCoordinatesUpdates();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -66,16 +75,18 @@ class _FleetScreenState extends State<FleetScreen> {
         Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: _controller.fleetList.isEmpty && !_controller.isLoading
-                ? EmptyFleetWidget(onClick: _openFleetRegisterScreen)
-                : FleetListWidget(
-                    onButtonClick: _openFleetRegisterScreen,
-                    fleetList: _controller.fleetList,
-                    coordinatesList: _controller.coordinatesList,
-                  ),
+            child: _isLoading
+                ? const SizedBox()
+                : _controller.fleetList.isEmpty
+                    ? EmptyFleetWidget(onClick: _openFleetRegisterScreen)
+                    : FleetListWidget(
+                        onButtonClick: _openFleetRegisterScreen,
+                        fleetList: _controller.fleetList,
+                        coordinatesList: _controller.coordinatesList,
+                      ),
           ),
         ),
-        if (_controller.isLoading) const Center(child: CircularProgressIndicator()),
+        if (_isLoading) const Center(child: CircularProgressIndicator()),
       ],
     );
   }
