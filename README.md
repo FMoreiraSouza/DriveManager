@@ -31,14 +31,15 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 ## ▶️ Como Rodar o Projeto
 
 ### Pré-requisitos
+
 - **Flutter** 3.0 ou superior (com Dart incluído).
 - **Visual Studio Code** (recomendado) com as extensões Flutter e Dart instaladas.
 - Conta no [Supabase](https://supabase.com/) configurada.
 - Chave da API do **Google Maps** para Android/iOS.
 
 ### Clone o repositório
-- git clone https://github.com/seu-user/drive-manager-app.git
-- cd drive-manager-app
+
+- git clone URL do projeto
 
 ### Configuração do Supabase
 
@@ -120,20 +121,24 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 ### Configuração do Google Maps
 
 #### Obtenha uma chave de API:
+
   - Acesse o Google Cloud Console e crie um projeto.
   - Habilite a Maps SDK for Android e/ou Maps SDK for iOS.
   - Gere uma chave de API e restrinja-a para uso com o Drive Manager.
 
 #### Configure a chave de API:
+
 - Para Android, adicione a chave no arquivo android/app/src/main/AndroidManifest.xml: <meta-data android:name="com.google.android.geo.API_KEY" android:value="SUA_CHAVE_API_AQUI"/>
 
 ### Passos para rodar no Visual Studio Code
 
 #### Instale as dependências:
+
 - Abra o Visual Studio Code e carregue a pasta drive-manager-app.
 - Abra o terminal integrado (Ctrl + ~) e execute: flutter pub get
 
 #### Configure o ambiente Flutter:
+
 - Certifique-se de que o Flutter está instalado e configurado corretamente: flutter doctor
 - Resolva quaisquer problemas indicados pelo comando acima.
 
@@ -147,5 +152,10 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
   - Conecte um dispositivo via USB com Modo Desenvolvedor e Depuração USB habilitados ou use Depuração sem fio (em Opções do desenvolvedor no dispositivo) e conecte via Wi-Fi.
 
 #### Execute o aplicativo:
+
 - No VS Code, clique em Run > Run Without Debugging ou pressione Ctrl + F5 ou alternativamente, no terminal, execute: flutter run.
 - O aplicativo será compilado e executado no emulador ou dispositivo.
+
+## 🎥 Apresentação do Aplicativo
+
+Confira a apresentação do aplicativo: [Apresentação](https://youtu.be/xgrYM1RJArE)
