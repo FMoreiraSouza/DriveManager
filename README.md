@@ -39,7 +39,7 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 
 ### Clone o repositório
 
-- git clone URL do projeto
+- git clone <URL_DO_PROJETO>
 
 ### Configuração do Supabase
 
