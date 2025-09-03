@@ -1,4 +1,4 @@
-<img src="assets/images/drive_manager_logo.png" alt="Logomarca" width="500" height="550">
+<img src="assets/images/drive_manager_logo.png" alt="Logo" width="400">
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.32.4-blue?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.8.1-blue?logo=dart)
@@ -6,7 +6,7 @@
 
 ## 📃 Descrição
 
-O **Drive Manager** é uma aplicação Flutter desenvolvida em **Dart** para gerenciamento de frotas, permitindo a administração eficiente de veículos e motoristas. O aplicativo consome dados em tempo real gerados pelo servidor **Vehicle Tracker** (Consulte o repositório do [Vehicle Tracker](https://github.com/seu-user/vehicle-simulation-app) para configurá-lo), que simula o movimento de veículos e fornece coordenadas, velocidades e notificações de defeitos. A integração com o **Supabase** oferece autenticação, armazenamento de dados e monitoramento em tempo real, enquanto o **Google Maps** é utilizado para visualização das localizações dos veículos.
+O **Drive Manager** é uma aplicação Flutter desenvolvida em **Dart** para gerenciamento de frotas, permitindo a administração eficiente de veículos e motoristas. O aplicativo consome dados em tempo real gerados pelo servidor **Vehicle Tracker** (Consulte o [repositório](https://github.com/FMoreiraSouza/VehicleTracker.git)), que simula o movimento de veículos e fornece coordenadas, velocidades e notificações de defeitos. A integração com o **Supabase** oferece autenticação, armazenamento de dados e monitoramento em tempo real, enquanto o **Google Maps** é utilizado para visualização das localizações dos veículos.
 
 ---
 
@@ -28,12 +28,6 @@ O **Drive Manager** é uma aplicação Flutter desenvolvida em **Dart** para ger
 
 ---
 
-## 🔗 Integração com Vehicle Tracker
-
-O **Drive Manager** depende do **Vehicle Tracker**, um servidor Kotlin que simula o movimento de veículos e envia dados de coordenadas, velocidades e notificações para o Supabase. Para que o **Drive Manager** funcione corretamente, o **Vehicle Tracker** deve estar configurado e em execução, enviando dados para as mesmas tabelas do Supabase (`vehicles`, `vehicle_coordinates`, `notifications`). Consulte o repositório do [Vehicle Tracker](https://github.com/seu-user/vehicle-simulation-app) para instruções de configuração.
-
----
-
 ## ▶️ Como Rodar o Projeto
 
 ### Pré-requisitos
@@ -41,7 +35,6 @@ O **Drive Manager** depende do **Vehicle Tracker**, um servidor Kotlin que simul
 - **Visual Studio Code** (recomendado) com as extensões Flutter e Dart instaladas.
 - Conta no [Supabase](https://supabase.com/) configurada.
 - Chave da API do **Google Maps** para Android/iOS.
-- Servidor **Vehicle Tracker** configurado e em execução (veja o repositório [Vehicle Tracker](https://github.com/seu-user/vehicle-simulation-app)).
 
 ### Clone o repositório
 - git clone https://github.com/seu-user/drive-manager-app.git
