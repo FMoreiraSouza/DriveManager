@@ -1,27 +1,158 @@
 <img src="assets/images/drive_manager_logo.png" alt="Logomarca" width="500" height="550">
 
-## Sobre o Aplicativo
+![Flutter](https://img.shields.io/badge/Flutter-3.32.4-blue?logo=flutter)
+![Dart](https://img.shields.io/badge/Dart-3.8.1-blue?logo=dart)
+---
 
-O **Drive Manager** é uma solução abrangente para a **gestão de frotas**. Desenvolvido para facilitar o gerenciamento de veículos e motoristas, o aplicativo permite a administração eficiente das informações de cada veículo, monitoramento em tempo real e geração de relatórios detalhados.
+## 📃 Descrição
 
-## Tecnologias Utilizadas
+O **Drive Manager** é uma aplicação Flutter desenvolvida em **Dart** para gerenciamento de frotas, permitindo a administração eficiente de veículos e motoristas. O aplicativo consome dados em tempo real gerados pelo servidor **Vehicle Tracker** (Consulte o repositório do [Vehicle Tracker](https://github.com/seu-user/vehicle-simulation-app) para configurá-lo), que simula o movimento de veículos e fornece coordenadas, velocidades e notificações de defeitos. A integração com o **Supabase** oferece autenticação, armazenamento de dados e monitoramento em tempo real, enquanto o **Google Maps** é utilizado para visualização das localizações dos veículos.
 
-- **Dart**: Linguagem de programação utilizada para o desenvolvimento do aplicativo.
-- **Flutter**: Framework para criar a interface do usuário e lógica do aplicativo.
-- **Supabase**: Plataforma de backend para autenticação e gerenciamento de dados.
+---
 
-## Funcionalidades
+## 💻 Tecnologias Utilizadas
 
-O **Drive Manager** oferece as seguintes funcionalidades:
+- **Dart**: Linguagem de programação principal.
+- **Flutter**: Framework para interface de usuário e lógica do aplicativo.
+- **Supabase**: Backend para autenticação, banco de dados e sincronização em tempo real.
+- **Google Maps**: API para monitoramento em tempo real da localização dos veículos.
 
-- **Cadastro de Frota**: Adicione e gerencie veículos e motoristas, incluindo informações como status de funcionamento, chassi e IMEI do rastreador (gerado aleatoriamente no aplicativo, pois o rastreador real não está disponível).
-- **Relatórios**: Gere relatórios detalhados sobre o desempenho e status dos veículos.
-- **Acompanhamento em Tempo Real**: Monitore a localização dos veículos em um mapa em tempo real.
+---
 
-## O que se Pretende Fazer
+## 🛎️ Funcionalidades
 
-O aplicativo está em desenvolvimento com o objetivo de:
+- **Cadastro de Frota**: Adicione e gerencie veículos, incluindo informações como placa, marca, modelo, quilometragem e IMEI do rastreador (gerado aleatoriamente no aplicativo, já que o rastreador real não está disponível).
+- **Acompanhamento em Tempo Real**: Visualize a movimentação dos veículos em um painel ou mapa, com dados fornecidos pelo **Vehicle Tracker**.
+- **Notificações**: Receba alertas de defeitos em tempo real e solicite suporte para veículos com falhas.
+- **Autenticação**: Login seguro para gestores, com armazenamento do nome de usuário.
 
-- **Cadastrar a Frota**: Incluir detalhes sobre cada veículo e motorista, e monitorar o status de funcionamento dos veículos.
-- **Gerar Relatórios**: Produzir relatórios úteis para a gestão e análise da frota.
-- **Acompanhar Veículos em Tempo Real**: Fornecer uma visualização em tempo real da localização dos veículos no mapa.
+---
+
+## 🔗 Integração com Vehicle Tracker
+
+O **Drive Manager** depende do **Vehicle Tracker**, um servidor Kotlin que simula o movimento de veículos e envia dados de coordenadas, velocidades e notificações para o Supabase. Para que o **Drive Manager** funcione corretamente, o **Vehicle Tracker** deve estar configurado e em execução, enviando dados para as mesmas tabelas do Supabase (`vehicles`, `vehicle_coordinates`, `notifications`). Consulte o repositório do [Vehicle Tracker](https://github.com/seu-user/vehicle-simulation-app) para instruções de configuração.
+
+---
+
+## ▶️ Como Rodar o Projeto
+
+### Pré-requisitos
+- **Flutter** 3.0 ou superior (com Dart incluído).
+- **Visual Studio Code** (recomendado) com as extensões Flutter e Dart instaladas.
+- Conta no [Supabase](https://supabase.com/) configurada.
+- Chave da API do **Google Maps** para Android/iOS.
+- Servidor **Vehicle Tracker** configurado e em execução (veja o repositório [Vehicle Tracker](https://github.com/seu-user/vehicle-simulation-app)).
+
+### Clone o repositório
+- git clone https://github.com/seu-user/drive-manager-app.git
+- cd drive-manager-app
+
+### Configuração do Supabase
+
+- Crie um projeto no Supabase:
+- Acesse o Supabase Dashboard e crie um novo projeto.
+- Copie a SUPABASE_URL e a SUPABASE_ANON_KEY fornecidas.
+- Configure as credenciais:
+  - Abra o arquivo lib/core/constants/database_keys.dart.
+  - Insira as credenciais SUPABASE_URL e SUPABASE_KEY do Supabase no arquivo.
+- Crie as tabelas no Supabase:
+  - No painel do Supabase, acesse a seção SQL Editor e execute os seguintes scripts para criar as tabelas necessárias:
+    ```bash
+    sqlCREATE TABLE public.vehicles (
+    id SERIAL NOT NULL,
+    plate_number TEXT NULL,
+    brand TEXT NULL,
+    model TEXT NULL,
+    mileage REAL NULL,
+    imei BIGINT NULL,
+    hasDefect BOOLEAN NULL DEFAULT false,
+    CONSTRAINT vehicles_pkey PRIMARY KEY (id)
+    ) TABLESPACE pg_default;
+
+    CREATE TABLE public.vehicle_coordinates (
+      id SERIAL NOT NULL,
+      latitude DOUBLE PRECISION NOT NULL,
+      longitude DOUBLE PRECISION NOT NULL,
+      timestamp TIMESTAMP WITH TIME ZONE NULL DEFAULT now(),
+      imei BIGINT NULL,
+      isStopped BOOLEAN NULL DEFAULT true,
+      speed DOUBLE PRECISION NULL,
+      CONSTRAINT vehicle_coordinates_pkey PRIMARY KEY (id)
+    ) TABLESPACE pg_default;
+    
+    CREATE TABLE public.notifications (
+      id SERIAL NOT NULL,
+      message TEXT NOT NULL,
+      created_at TIMESTAMP WITHOUT TIME ZONE NULL DEFAULT now(),
+      plate_number TEXT NULL,
+      CONSTRAINT notifications_pkey PRIMARY KEY (id)
+    ) TABLESPACE pg_default;
+- Habilite o Row Level Security (RLS):
+  - No Supabase Dashboard, vá para Database > Tables e selecione cada tabela (vehicles, vehicle_coordinates, notifications).
+  - Ative o RLS para cada tabela clicando em Enable RLS.
+- Execute o seguinte script SQL no SQL Editor para configurar as políticas de RLS, permitindo leitura, inserção e atualização para usuários autenticados:
+  ```bash
+  -- Política para a tabela vehicles
+  CREATE POLICY "Allow all operations for public on vehicles" ON public.vehicles
+  FOR ALL
+  TO public
+  USING (true)
+  WITH CHECK (true);
+
+  -- Política para a tabela vehicle_coordinates
+  CREATE POLICY "Allow all operations for public on vehicle_coordinates" ON public.vehicle_coordinates
+  FOR ALL
+  TO public
+  USING (true)
+  WITH CHECK (true);
+
+  -- Política para a tabela notifications
+  CREATE POLICY "Allow all operations for public on notifications" ON public.notifications
+  FOR ALL
+  TO public
+  USING (true)
+  WITH CHECK (true);
+- Habilite o Realtime:
+  - Para ativar o Realtime nas tabelas vehicles, vehicle_coordinates e notifications, é necessário adicionar essas tabelas à publicação supabase_realtime (ou criar uma nova publicação, se preferir).
+  - Execute o seguinte script SQL no SQL Editor do Supabase:
+  ```bash
+  sql-- Criar a publicação supabase_realtime (se ainda não existir)
+  CREATE PUBLICATION supabase_realtime FOR TABLE public.vehicles, public.vehicle_coordinates, public.notifications;
+  
+  -- Caso a publicação já exista, adicione as tabelas à publicação existente
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.vehicles;
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.vehicle_coordinates;
+  ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
+
+### Configuração do Google Maps
+
+#### Obtenha uma chave de API:
+  - Acesse o Google Cloud Console e crie um projeto.
+  - Habilite a Maps SDK for Android e/ou Maps SDK for iOS.
+  - Gere uma chave de API e restrinja-a para uso com o Drive Manager.
+
+#### Configure a chave de API:
+- Para Android, adicione a chave no arquivo android/app/src/main/AndroidManifest.xml: <meta-data android:name="com.google.android.geo.API_KEY" android:value="SUA_CHAVE_API_AQUI"/>
+
+### Passos para rodar no Visual Studio Code
+
+#### Instale as dependências:
+- Abra o Visual Studio Code e carregue a pasta drive-manager-app.
+- Abra o terminal integrado (Ctrl + ~) e execute: flutter pub get
+
+#### Configure o ambiente Flutter:
+- Certifique-se de que o Flutter está instalado e configurado corretamente: flutter doctor
+- Resolva quaisquer problemas indicados pelo comando acima.
+
+#### Configure o emulador ou dispositivo:
+
+- Emulador:
+  - No VS Code, clique em Run > Start Debugging ou pressione F5.
+  - Selecione um emulador Android/iOS (recomendado: Pixel 6 com API 33 para Android).
+
+- Dispositivo físico:
+  - Conecte um dispositivo via USB com Modo Desenvolvedor e Depuração USB habilitados ou use Depuração sem fio (em Opções do desenvolvedor no dispositivo) e conecte via Wi-Fi.
+
+#### Execute o aplicativo:
+- No VS Code, clique em Run > Run Without Debugging ou pressione Ctrl + F5 ou alternativamente, no terminal, execute: flutter run.
+- O aplicativo será compilado e executado no emulador ou dispositivo.
