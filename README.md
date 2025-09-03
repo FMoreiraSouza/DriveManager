@@ -6,7 +6,7 @@
 
 ## 📃 Descrição
 
-O **Drive Manager** é uma aplicação Flutter desenvolvida em **Dart** para gerenciamento de frotas, permitindo a administração eficiente de veículos e motoristas. O aplicativo consome dados em tempo real gerados pelo servidor **Vehicle Tracker** (Consulte o [repositório](https://github.com/FMoreiraSouza/VehicleTracker.git)), que simula o movimento de veículos e fornece coordenadas, velocidades e notificações de defeitos. A integração com o **Supabase** oferece autenticação, armazenamento de dados e monitoramento em tempo real, enquanto o **Google Maps** é utilizado para visualização das localizações dos veículos.
+O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamento de frotas, permitindo o monitoramento e administração eficiente de veículos e motoristas. A aplicação segue a Clean Architecture, com uma estrutura modular dividida em camadas: presentation (interface do usuário e controladores), domain (modelos, casos de uso e interfaces de repositório) e data (implementações de repositórios e acesso a dados). Essa arquitetura promove separação de responsabilidades, testabilidade e escalabilidade. O aplicativo se integra com o Vehicle Tracker (consulte o repositório), que simula o movimento de veículos, fornecendo dados como coordenadas, velocidades e notificações de defeitos em tempo real. A integração com o Supabase garante autenticação segura, armazenamento de dados e sincronização em tempo real, enquanto a API do Google Maps é utilizada para visualização das localizações dos veículos em um mapa interativo.
 
 ---
 
