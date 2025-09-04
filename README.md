@@ -153,7 +153,7 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 #### Configure o emulador ou dispositivo:
 
 - Emulador:
-  - No VS Code, clique em Run > Start Debugging ou pressione F5.
+  - No Visual Sudio Code, clique em Run > Start Debugging ou pressione F5.
   - Selecione um emulador Android/iOS (recomendado: Pixel 6 com API 33 para Android).
 
 - Dispositivo físico:
@@ -161,7 +161,7 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 
 #### Execute o aplicativo:
 
-- No VS Code, clique em Run > Run Without Debugging ou pressione Ctrl + F5 ou alternativamente, no terminal, execute: flutter run.
+- No Visual Studio Code, clique em Run > Run Without Debugging ou pressione Ctrl + F5 ou alternativamente, no terminal, execute: flutter run.
 - O aplicativo será compilado e executado no emulador ou dispositivo.
 
 ## 🎥 Apresentação do Aplicativo
