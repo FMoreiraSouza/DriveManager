@@ -14,6 +14,7 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 
 - **Dart**: Linguagem de programação principal.
 - **Flutter**: Framework para interface de usuário e lógica do aplicativo.
+- **Gerenciador setState**: Gerenciamento de estado local utilizando `setState` nos widgets e controladores personalizados.
 - **Supabase**: Backend para autenticação, banco de dados e sincronização em tempo real.
 - **Google Maps**: API para monitoramento em tempo real da localização dos veículos.
 
@@ -25,6 +26,11 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 - **Acompanhamento em Tempo Real**: Visualize a movimentação dos veículos em um painel ou mapa, com dados fornecidos pelo **Vehicle Tracker**.
 - **Notificações**: Receba alertas de defeitos em tempo real e solicite suporte para veículos com falhas.
 - **Autenticação**: Login seguro para gestores, com armazenamento do nome de usuário.
+- **Gerenciamento** de Estados de Tela: 
+  - **Loading**: Indicadores de carregamento com `LoadPanel` e `CircularProgressIndicator` para operações assíncronas, como login, cadastro de veículos e busca de dados.
+  - **Success**: Exibição de dados carregados, como listas de veículos, marcadores no mapa e notificações, com atualizações em tempo real via Supabase.
+  - **Error**: Tratamento de erros com `SnackBar` para falhas gerais e `AlertDialog` para erros específicos, além de mensagens visuais para falhas de conexão no mapa.
+  - **Toast Messages**: Notificações visuais via `SnackBar` para ações como cadastro bem-sucedido, erros ou alertas em tempo real, com opções interativas.
 
 ---
 
@@ -45,7 +51,7 @@ O Drive Manager é uma aplicação Flutter desenvolvida em Dart para gerenciamen
 
 - Crie um projeto no Supabase:
 - Acesse o Supabase Dashboard e crie um novo projeto.
-- Copie a SUPABASE_URL e a SUPABASE_ANON_KEY fornecidas.
+- Copie a SUPABASE_URL e a SUPABASE_KEY fornecidas.
 - Configure as credenciais:
   - Abra o arquivo lib/core/constants/database_keys.dart.
   - Insira as credenciais SUPABASE_URL e SUPABASE_KEY do Supabase no arquivo.
