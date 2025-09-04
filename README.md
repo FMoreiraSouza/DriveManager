@@ -1,4 +1,6 @@
-<img src="assets/images/drive_manager_logo.png" alt="Logo" width="400">
+<p align="center">
+  <img src="assets/images/drive_manager_logo.png" alt="Logo" width="400">
+</p>
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.32.4-blue?logo=flutter)
 ![Dart](https://img.shields.io/badge/Dart-3.8.1-blue?logo=dart)
